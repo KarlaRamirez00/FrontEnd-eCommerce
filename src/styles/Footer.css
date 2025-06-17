@@ -1,0 +1,91 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.footer {
+  background-color: #212529;
+  color: #fff; /* Texto blanco */
+  padding: 20px 0; /* Espaciado vertical */
+}
+
+.footer .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* Permite que los elementos se ajusten en pantallas pequeñas */
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  flex-wrap: wrap; /* Permite que los elementos se ajusten en pantallas pequeñas */
+}
+
+/* Estilo para la sección de contacto */
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Espacio entre los elementos de contacto */
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Espacio entre el icono y el texto */
+}
+
+/* Estilo para los enlaces del footer */
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Espacio entre los enlaces */
+}
+
+.footer-link {
+  color: #bebebe; /* Color gris para los enlaces */
+  text-decoration: none; /* Sin subrayado */
+  transition: color 0.3s; /* Transición suave para el cambio de color */
+}
+
+.footer-link:hover {
+  color: #ffffff; /* Color al pasar el mouse */
+}
+
+/* Estilo para los iconos de redes sociales */
+.social-icons {
+  display: flex;
+  gap: 15px; /* Espacio entre los iconos */
+}
+
+.footer-icon-link {
+  color: #c7c8c9;
+  font-size: 1.5rem;
+  transition: color 0.3s;
+}
+
+.footer-icon-link:hover {
+  color: #ffffff;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .contact-info {
+    align-items: center; /* Centra los elementos dentro de la sección de contacto */
+    text-align: center; /* Centra el texto dentro de la sección */
+  }
+
+  .contact-info,
+  .footer-links,
+  .social-icons {
+    margin-bottom: 20px;
+  }
+}

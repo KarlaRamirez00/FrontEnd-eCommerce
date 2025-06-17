@@ -1,0 +1,94 @@
+.category-slider {
+  position: fixed;
+  top: 0;
+  left: -400px;
+  width: 320px;
+  height: 100%;
+  background-color: #fff;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+  transition: left 0.3s ease-in-out;
+  z-index: 1000;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.category-slider.open {
+  left: 0;
+}
+
+.close-button {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.category-title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.category-columns {
+  display: flex;
+  gap: 1rem;
+}
+
+.category-list,
+.subcategory-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.category-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 500;
+  padding: 0.4rem;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.category-item:hover {
+  background-color: #f0f0f0;
+}
+
+.arrow-icon {
+  margin-left: auto;
+  color: #666;
+}
+
+.subcategory-item {
+  padding-left: 0.5rem;
+  color: #333;
+  text-decoration: none;
+}
+
+.subcategory-item:hover {
+  font-weight: bold;
+}
+
+/* Estilos específicos para UserMenu - se abre desde la DERECHA */
+.user-menu-slider {
+  position: fixed;
+  top: 0;
+  right: -400px; /* Empieza fuera del lado DERECHO */
+  width: 320px;
+  height: 100%;
+  background-color: #fff;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2); /* Sombra hacia la izquierda */
+  transition: right 0.3s ease-in-out;
+  z-index: 1000;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-menu-slider.open {
+  right: 0;
+}

@@ -1,0 +1,102 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* Estilo base para los enlaces de navegación */
+.navbar-nav .nav-link {
+  transition: color 0.3s;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #ffffff;
+}
+
+/* Para destacar "Ofertas" */
+.navbar-nav .nav-item .ofertas-link {
+  color: #f6af33;
+}
+.navbar-nav .nav-item .ofertas-link:hover {
+  color: #e7302a;
+}
+
+.top-bar .navbar-brand {
+  margin: 10px;
+}
+
+.top-bar .search-form {
+  display: flex; /* Asegúrate de que sea flex para controlar el ancho de los hijos */
+  flex-grow: 1;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.top-bar .search-form input[type="search"] {
+  flex-grow: 1; /* El input ocupa el espacio restante */
+}
+
+.top-bar .search-form button[type="submit"] {
+  width: auto; /* El botón se ajusta al contenido */
+  padding: 0.5rem 1rem; /* Ajusta el padding para el tamaño visual */
+  background-color: #f0f0f0;
+}
+.top-bar .search-form button[type="submit"]:hover {
+  background-color: #cccccc; /* Un gris un poco más oscuro al pasar el mouse */
+  color: white; /* Texto blanco al pasar el mouse */
+  transform: scale(1.08); /* Escala el botón a 1.05 veces su tamaño original */
+}
+
+.top-bar .icon-group {
+  margin: 10px;
+  display: flex;
+  gap: 20px; /* Espacio entre los iconos */
+}
+
+.logo {
+  width: 100px;
+  height: auto;
+}
+
+.icon-group {
+  gap: 20px; /* Espacio entre los iconos */
+}
+
+.icon-link {
+  color: #555;
+  font-size: 1.2rem;
+  transition: color 0.3s;
+}
+
+.icon-link:hover {
+  color: #e7302a;
+}
+
+.cart-icon-container {
+  position: relative;
+  cursor: pointer;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #e7302a;
+  color: white;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 50%;
+  font-weight: bold;
+  transition: all 0.2s ease-in-out;
+}
+
+@media (max-width: 641px) {
+  .top-header {
+    flex-direction: column; /* Cambia la dirección del flex a columna */
+    align-items: center; /* Centra los elementos en la columna */
+  }
+
+  .icon-group {
+    justify-content: center; /* Centra los íconos */
+    margin-top: 10px; /* Añade un margen superior para separar del campo de búsqueda */
+  }
+}

@@ -1,0 +1,158 @@
+/* Contenedor principal de resultados de búsqueda */
+.search-results-container {
+  padding: 20px;
+  min-height: 60vh;
+}
+
+/* Contenedor de carga */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+/* Sugerencia de subcategoría */
+.subcategory-suggestion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  padding: 40px 20px;
+}
+
+.suggestion-content {
+  text-align: center;
+  max-width: 600px;
+  padding: 40px;
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  background-color: #f8f9fa;
+}
+
+.suggestion-content h3 {
+  color: #495057;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.suggestion-content p {
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+  color: #6c757d;
+}
+
+/* Resaltado de coincidencias */
+.suggestion-content strong {
+  background-color: #fff3cd;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-weight: bold;
+  color: #856404;
+}
+
+/* Contenedor "No encontrado" */
+.no-results-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 500px;
+  padding: 40px 20px;
+}
+
+.no-results-content {
+  text-align: center;
+  max-width: 500px;
+}
+
+.no-results-image {
+  width: 200px;
+  height: auto;
+  margin-bottom: 0px;
+  opacity: 0.8;
+}
+
+.no-results-content h3 {
+  color: #495057;
+  margin-bottom: 15px;
+  font-size: 1.8rem;
+}
+
+.no-results-content > p {
+  color: #6c757d;
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+}
+
+/* Sugerencias de búsqueda */
+.search-suggestions {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+.search-suggestions p {
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #495057;
+}
+
+.search-suggestions ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.search-suggestions li {
+  color: #6c757d;
+  margin-bottom: 5px;
+}
+
+/* Botones */
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background-color: #000000;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #f6af33;
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #545b62;
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .search-results-container {
+    padding: 15px;
+  }
+
+  .no-results-image {
+    width: 150px;
+  }
+
+  .suggestion-content,
+  .no-results-content {
+    padding: 20px;
+  }
+}

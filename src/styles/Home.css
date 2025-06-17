@@ -1,0 +1,180 @@
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background-color: #f8f9fa;
+  text-align: center;
+  padding: 10px;
+  min-height: 70vh;
+}
+
+/* Secciones */
+.section {
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 20px;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.section h2 {
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 25px;
+  font-weight: 600;
+  position: relative;
+  display: inline-block;
+}
+
+.section h2:after {
+  content: "";
+  position: absolute;
+  width: 60px;
+  height: 3px;
+  background-color: #f6af33;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Subcategorías */
+.subcategories-section {
+  margin-top: 20px;
+}
+
+.home-subcategory-list {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+  flex-wrap: wrap;
+}
+
+.home-subcategory-link {
+  padding: 0.8rem 1.2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  background-color: #f0f0f0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.home-subcategory-link:hover {
+  background-color: #f6af33;
+  color: white;
+  transform: translateY(-3px);
+}
+
+/* Productos Destacados */
+.best-sellers {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Estados de carga y error */
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  color: #f6af33;
+}
+
+.error-container {
+  text-align: center;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 40px auto;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+.no-products-message {
+  font-size: 1rem;
+  color: #777;
+  margin: 40px 0;
+}
+
+/* Botones generales */
+.btn {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+  padding: 8px 16px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-dark {
+  background-color: black;
+  color: #fff;
+}
+
+.btn-dark:hover {
+  background-color: #f6af33;
+  transform: translateY(-2px);
+}
+
+.btn-dark:active {
+  background-color: #212529;
+  transform: translateY(0);
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .section {
+    padding: 15px;
+  }
+
+  .home-subcategory-link {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .section h2 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-container {
+    padding: 15px 0;
+  }
+
+  .section {
+    padding: 10px;
+  }
+
+  .home-subcategory-list {
+    gap: 1rem;
+  }
+
+  .home-subcategory-link {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.85rem;
+    width: 100%;
+    max-width: 180px;
+    justify-content: center;
+  }
+}
