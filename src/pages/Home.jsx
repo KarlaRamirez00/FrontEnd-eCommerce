@@ -111,6 +111,18 @@ const Home = ({ onAddToCart }) => {
     );
   }
 
+  // TEMPORAL - para debuggear
+  console.log("Productos destacados:", productosDestacados);
+  productosDestacados.forEach((p) => {
+    if (p.valorOferta && p.valorOriginal) {
+      console.log(`${p.nomProducto}:`, {
+        original: p.valorOriginal,
+        oferta: p.valorOferta,
+        calculo: Math.round(100 - (p.valorOferta / p.valorOriginal) * 100),
+      });
+    }
+  });
+
   return (
     <div className="home-container">
       {/* Sección de Subcategorías Destacadas */}

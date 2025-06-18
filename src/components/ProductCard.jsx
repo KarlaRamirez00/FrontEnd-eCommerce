@@ -92,16 +92,17 @@ const ProductCard = ({ producto, onAddToCart }) => {
           onError={handleImageError}
           loading="lazy"
         />
-        {producto.valorOferta && producto.valorOriginal && (
-          <div className="discount-badge">
-            {Math.round(
-              ((producto.valorOriginal - producto.valorOferta) /
-                producto.valorOriginal) *
-                100
-            )}
-            %
-          </div>
-        )}
+        {producto.valorOferta &&
+          producto.valorOriginal &&
+          producto.valorOferta < producto.valorOriginal && (
+            <div className="discount-badge">
+              -
+              {Math.round(
+                100 - (producto.valorOferta / producto.valorOriginal) * 100
+              )}
+              %
+            </div>
+          )}
       </div>
 
       <h3 className="product-title" title={producto.nombre}>

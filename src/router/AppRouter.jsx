@@ -8,6 +8,8 @@ import Subcategory from "../pages/Subcategory";
 import ProductDetails from "../pages/ProductDetails";
 import ActivateAccount from "../pages/ActivateAccount";
 import ResetPassword from "../pages/ResetPassword";
+import Offers from "../pages/Offers";
+import AboutUs from "../pages/AboutUs";
 
 const AppRouter = ({ onAddToCart, onOpenRecuperarPassword }) => {
   return (
@@ -33,6 +35,10 @@ const AppRouter = ({ onAddToCart, onOpenRecuperarPassword }) => {
       <Route path="/activar-cuenta" element={<ActivateAccount />} />
       {/* RUTA PARA RESTABLECER CONTRASEÑA */}
       <Route path="/restablecer-password" element={<ResetPassword />} />
+
+      <Route path="/ofertas" element={<Offers onAddToCart={onAddToCart} />} />
+
+      <Route path="/nosotros" element={<AboutUs />} />
     </Routes>
   );
 };

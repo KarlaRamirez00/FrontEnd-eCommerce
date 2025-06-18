@@ -23,7 +23,7 @@ const Footer = () => {
               <FontAwesomeIcon icon={faWhatsapp} /> +56 9 9999 9999
             </div>
             <div className="contact-item">
-              <FontAwesomeIcon icon={faEnvelope} /> tucorreo@aqui.cl
+              <FontAwesomeIcon icon={faEnvelope} /> info@multishop.cl
             </div>
           </div>
 

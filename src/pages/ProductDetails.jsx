@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getDetalleProducto } from "../data/productService";
+import axios from "axios";
 import "../styles/ProductDetails.css";
 
 const ProductDetails = ({ onAddToCart }) => {
   const { id } = useParams();
   const [producto, setProducto] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
+
+  // Nuevo estado para descuentos
+  const [descuentoInfo, setDescuentoInfo] = useState(null);
 
   // Estado para la opción seleccionada
   const [opcionSeleccionada, setOpcionSeleccionada] = useState(null);
@@ -18,7 +22,6 @@ const ProductDetails = ({ onAddToCart }) => {
     const fetchProducto = async () => {
       const data = await getDetalleProducto(id);
       console.log("PRODUCTO COMPLETO del backend:", data);
-      console.log("CANTIDAD DE OPCIONES:", data?.stock?.length);
       setProducto(data);
 
       // Si solo hay una opción, seleccionarla automáticamente
@@ -29,20 +32,64 @@ const ProductDetails = ({ onAddToCart }) => {
       // Reset estados cuando cambia de producto
       setOpcionSeleccionada(null);
       setMostrarError(false);
+
+      // Buscar información de descuentos
+      await buscarDescuentos(id);
     };
 
     fetchProducto();
   }, [id]);
 
+  // Nueva función para buscar descuentos
+  const buscarDescuentos = async (productoId) => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/producto/ofertas?pagina=1"
+      );
+      const productosConDescuento = response.data.Productos || [];
+
+      // Buscar si este producto específico tiene descuento
+      const productoConDescuento = productosConDescuento.find(
+        (p) => p.idProducto === parseInt(productoId)
+      );
+
+      if (productoConDescuento) {
+        const porcentajeDescuento = Math.round(
+          100 -
+            (productoConDescuento.valorOferta /
+              productoConDescuento.valorOriginal) *
+              100
+        );
+
+        setDescuentoInfo({
+          valorOriginal: productoConDescuento.valorOriginal,
+          valorOferta: productoConDescuento.valorOferta,
+          porcentajeDescuento,
+        });
+
+        console.log("✅ Descuento encontrado:", {
+          original: productoConDescuento.valorOriginal,
+          oferta: productoConDescuento.valorOferta,
+          porcentaje: porcentajeDescuento,
+        });
+      } else {
+        setDescuentoInfo(null);
+        console.log("❌ Sin descuento para este producto");
+      }
+    } catch (error) {
+      console.error("Error al buscar descuentos:", error);
+      setDescuentoInfo(null);
+    }
+  };
+
   const handleOpcionChange = (opcion) => {
     setOpcionSeleccionada(opcion);
-    setMostrarError(false); // Quitar error al seleccionar
+    setMostrarError(false);
   };
 
   const handleAddToCart = () => {
     if (!producto) return;
 
-    // Si hay múltiples opciones y no ha seleccionado ninguna
     if (producto.stock.length > 1 && !opcionSeleccionada) {
       setMostrarError(true);
       return;
@@ -50,7 +97,6 @@ const ProductDetails = ({ onAddToCart }) => {
 
     setIsAdding(true);
 
-    // Usar la opción seleccionada o la única disponible
     const opcionFinal = opcionSeleccionada || producto.stock[0];
 
     const productoParaCarrito = {
@@ -58,18 +104,18 @@ const ProductDetails = ({ onAddToCart }) => {
       imagen: `http://localhost:5000/uploads/${
         producto.imagenes[0]?.imagen || ""
       }`,
-      precio: producto.valorOferta ?? producto.precio ?? 0,
+      // Usar precio con descuento si existe
+      precio: descuentoInfo?.valorOferta ?? producto.precio ?? 0,
 
-      // Agregar información de la opción seleccionada
       opcionElegida: {
         idOpcion: opcionFinal.idOpcion,
-        nombreOpcion: producto.opcion, // "Color", "Talla", etc.
-        valorOpcion: opcionFinal.glosaOpcion, // "Azul", "Verde", etc.
+        nombreOpcion: producto.opcion,
+        valorOpcion: opcionFinal.glosaOpcion,
         stock: producto.stock,
       },
     };
 
-    console.log("PRODUCTO PARA CARRITO CON OPCIÓN:", productoParaCarrito);
+    console.log("PRODUCTO PARA CARRITO CON DESCUENTO:", productoParaCarrito);
     onAddToCart(productoParaCarrito);
 
     setTimeout(() => setIsAdding(false), 800);
@@ -77,46 +123,61 @@ const ProductDetails = ({ onAddToCart }) => {
 
   if (!producto) return <p>Cargando...</p>;
 
-  // Determinar si mostrar selector de opciones
   const mostrarSelector = producto.stock.length > 1;
 
   return (
     <div className="product-details">
       <div className="product-main">
-        {/* Imagen principal */}
+        {/* Imagen principal con badge de descuento */}
         <div className="product-image-wrapper">
           {producto.imagenes[0] && (
-            <img
-              src={`http://localhost:5000/uploads/${producto.imagenes[0].imagen}`}
-              alt="Imagen principal del producto"
-              className="product-image-main"
-            />
+            <>
+              <img
+                src={`http://localhost:5000/uploads/${producto.imagenes[0].imagen}`}
+                alt="Imagen principal del producto"
+                className="product-image-main"
+              />
+              {/* Badge de descuento */}
+              {descuentoInfo && (
+                <div className="discount-badge-detail">
+                  -{descuentoInfo.porcentajeDescuento}%
+                </div>
+              )}
+            </>
           )}
         </div>
 
         {/* Info: Nombre, Precio, Opciones, Botón */}
         <div className="product-info">
           <h1>{producto.nombre}</h1>
-          <p className="product-price">
-            {producto.valorOferta ? (
-              <>
-                <span style={{ textDecoration: "line-through", color: "#888" }}>
-                  ${producto.precio?.toLocaleString("es-CL")}
-                </span>
-                <span
-                  style={{ color: "red", fontWeight: "bold", marginLeft: 8 }}
-                >
-                  ${producto.valorOferta.toLocaleString("es-CL")}
-                </span>
-              </>
-            ) : producto.precio != null ? (
-              `$${producto.precio.toLocaleString("es-CL")}`
-            ) : (
-              "(no disponible aún)"
-            )}
-          </p>
 
-          {/* Selector de opciones - Solo si hay más de una opción */}
+          {/* Precio con descuentos */}
+          <div className="product-price">
+            {descuentoInfo ? (
+              <div className="price-with-discount">
+                {/* Precio con descuento (grande) */}
+                <div className="current-price">
+                  ${descuentoInfo.valorOferta.toLocaleString("es-CL")}
+                </div>
+                {/* Precio original (tachado) */}
+                <div className="original-price-detail">
+                  Antes{" "}
+                  <span className="strikethrough">
+                    ${descuentoInfo.valorOriginal.toLocaleString("es-CL")}
+                  </span>
+                </div>
+              </div>
+            ) : (
+              // Sin descuento
+              <div className="regular-price">
+                {producto.precio != null
+                  ? `$${producto.precio.toLocaleString("es-CL")}`
+                  : "(no disponible aún)"}
+              </div>
+            )}
+          </div>
+
+          {/* Resto del código igual - selector de opciones */}
           {mostrarSelector && (
             <div className="product-options">
               <h4 className="options-title">{producto.opcion}:</h4>
@@ -155,7 +216,6 @@ const ProductDetails = ({ onAddToCart }) => {
                 })}
               </div>
 
-              {/* Mensaje de error si no selecciona opción */}
               {mostrarError && (
                 <p className="options-error">
                   Por favor selecciona una opción antes de agregar al carrito
@@ -164,7 +224,6 @@ const ProductDetails = ({ onAddToCart }) => {
             </div>
           )}
 
-          {/* Información para productos con una sola opción */}
           {!mostrarSelector && producto.stock.length === 1 && (
             <div className="single-option-info">
               <p className="single-option-text">
@@ -191,7 +250,7 @@ const ProductDetails = ({ onAddToCart }) => {
         </div>
       </div>
 
-      {/* Resto de la info del producto */}
+      {/* Resto de la info del producto - sin cambios */}
       <div className="product-extra-info">
         <p>
           <strong>Descripción:</strong> {producto.descripcion}

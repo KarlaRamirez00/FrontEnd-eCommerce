@@ -138,8 +138,8 @@ const Header = ({
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/contacto">
-                    Contacto
+                  <Link className="nav-link" to="/nosotros">
+                    Nosotros
                   </Link>
                 </li>
               </ul>

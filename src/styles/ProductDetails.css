@@ -23,6 +23,7 @@
 .product-image-wrapper {
   flex: 1 1 40%;
   text-align: center;
+  position: relative; /* ← ESTA LÍNEA ES CLAVE */
 }
 
 .product-image-main {
@@ -258,4 +259,146 @@
   margin: 0;
   font-size: 14px;
   color: #666;
+}
+
+/* ESTILOS PARA PRODUCTOS CON DECUENTO */
+
+/* Badge de descuento en la imagen */
+.discount-badge-detail {
+  position: absolute;
+  top: 6px;
+  right: 15px;
+  background-color: #ff3e3e;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 14px;
+  z-index: 1;
+}
+
+/* Contenedor de precios con descuento */
+.price-with-discount {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: baseline; /* Alinea por la línea base del texto */
+  gap: 12px; /* Espacio entre precio actual y original */
+}
+
+/* Precio actual (con descuento) */
+.current-price {
+  font-size: 28px;
+  font-weight: bold;
+  color: #f6af33;
+}
+
+/* Precio original (tachado) */
+.original-price-detail {
+  font-size: 16px;
+  color: #888;
+  font-weight: normal;
+}
+
+.original-price-detail .strikethrough {
+  text-decoration: line-through;
+}
+
+/* Precio sin descuento */
+.regular-price {
+  font-size: 28px;
+  color: #f6af33;
+}
+
+/* Estilos para AboutUs */
+
+/* Breadcrumb */
+.breadcrumb {
+  margin-bottom: 20px;
+  color: #666;
+  font-size: 14px;
+}
+
+.breadcrumb a {
+  color: #f6af33;
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+/* Header de About */
+.about-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.about-title {
+  font-size: 2.5rem;
+  color: #333;
+  font-weight: 600;
+  position: relative;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.about-title::after {
+  content: "";
+  position: absolute;
+  width: 100px;
+  height: 3px;
+  background-color: #f6af33;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Introducción */
+.about-intro {
+  text-align: center;
+  margin-bottom: 50px;
+  font-size: 18px;
+  color: #555;
+  line-height: 1.6;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Títulos de sección */
+.about-section-title {
+  font-size: 2rem;
+  margin-bottom: 25px;
+  color: #333;
+  font-weight: 600;
+  position: relative;
+  display: inline-block;
+}
+
+.about-section-title::after {
+  content: "";
+  position: absolute;
+  width: 80px;
+  height: 3px;
+  background-color: #f6af33;
+  bottom: -10px;
+  left: 0;
+}
+
+/* Texto de las secciones */
+.about-text {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.7;
+  margin-bottom: 15px;
+}
+
+/* Invertir orden para la visión */
+.about-reverse {
+  flex-direction: row-reverse;
+}
+
+/* Espaciado entre secciones */
+.product-main + .product-main {
+  margin-top: 50px;
 }

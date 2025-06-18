@@ -12,7 +12,7 @@
 .breadcrumb {
   width: 100%;
   max-width: 1200px;
-  padding: 10px 0;
+  padding: 10px 10px;
   margin-bottom: 20px;
   font-size: 0.9rem;
   color: #666;
@@ -33,14 +33,14 @@
   font-weight: 500;
 }
 
-/* Subcategory Title */
 .subcategory-title {
+  display: block;
+  margin: 0 auto 30px auto; /* 30px bottom margin */
   font-size: 2rem;
   font-weight: 600;
   color: #333;
-  margin-bottom: 30px;
   position: relative;
-  display: inline-block;
+  max-width: max-content; /* para que el margen auto funcione bien */
 }
 
 .subcategory-title:after {
@@ -67,6 +67,9 @@
   font-size: 0.9rem;
   color: #777;
   margin-bottom: 20px;
+  text-align: center; /* Centra el texto dentro del elemento */
+  display: block; /* Asegura que el elemento ocupe el ancho completo para que text-align funcione */
+  width: 100%; /* Ocupa todo el ancho disponible */
 }
 
 /* Loading State */
@@ -171,4 +174,59 @@
   .error-actions {
     flex-direction: column;
   }
+}
+
+/*=============================================*/
+
+.home-subcategory-link.active {
+  background-color: #f6af33 !important;
+  color: white !important;
+}
+
+/* Estilos específicos para filtros de ofertas */
+.filter-section {
+  display: flex;
+  align-items: center; /* Alinea verticalmente al centro */
+  justify-content: center; /* Centra horizontalmente */
+  margin-top: 40px;
+  margin-bottom: 10px;
+}
+
+.filter-section p {
+  margin-right: 20px; /* Espacio entre el párrafo y los botones */
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 8px 16px;
+  border: 2px solid #ddd;
+  background-color: white;
+  color: #333;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.filter-btn:hover {
+  border-color: #f6af33;
+  background-color: #fff8e1;
+}
+
+.filter-btn.active {
+  border-color: #f6af33;
+  background-color: #f6af33;
+  color: white;
+}
+
+.page-subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  margin-top: 10px;
+  text-align: center;
 }
