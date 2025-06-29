@@ -58,7 +58,7 @@ const CartSlider = ({
     cvv: "",
   });
 
-  // Actualizar datos cuando cambie el usuario
+  // Actualiza datos cuando cambie el usuario
   useEffect(() => {
     if (user) {
       setDatosEnvio((prev) => ({
@@ -73,7 +73,7 @@ const CartSlider = ({
 
   // Función para verificar si el checkout está completo
   const isCheckoutCompleto = () => {
-    // Validar datos de pago (siempre requeridos)
+    // Valida datos de pago (siempre requeridos)
     const pagoCompleto =
       validarTarjeta(datosPago.numeroTarjeta) &&
       validarFechaVencimiento(datosPago.fechaVencimiento) &&
@@ -123,21 +123,21 @@ const CartSlider = ({
   };
 
   const formatearNumeroTarjeta = (valor) => {
-    // Remover espacios y caracteres no numéricos
+    // Remueve espacios y caracteres no numéricos
     const soloNumeros = valor.replace(/\D/g, "");
-    // Agrupar de 4 en 4
+    // Agrupa de 4 en 4
     const formateado = soloNumeros.replace(/(\d{4})(?=\d)/g, "$1 ");
     return formateado;
   };
 
   const formatearFechaVencimiento = (valor) => {
-    // Remover caracteres no numéricos
+    // Remueve caracteres no numéricos
     const soloNumeros = valor.replace(/\D/g, "");
 
-    // Limitar a máximo 4 dígitos
+    // Limita a máximo 4 dígitos
     const limitado = soloNumeros.slice(0, 4);
 
-    // Agregar / después del mes SOLO si hay al menos 3 dígitos
+    // Agrega / después del mes SOLO si hay al menos 3 dígitos
     if (limitado.length >= 3) {
       return limitado.slice(0, 2) + "/" + limitado.slice(2);
     }
@@ -145,50 +145,52 @@ const CartSlider = ({
     return limitado;
   };
 
+  // Formateo de RUT chileno agregando "-" antes del DV
   const formatearRUT = (rut) => {
-    // Elimina todo excepto números y K
+    // Elimina todo lo que no es número o la letra K, y convierte a mayúscula
     rut = rut.replace(/[^0-9kK]/g, "").toUpperCase();
 
     // Si tiene menos de 2 caracteres, no se puede formatear
     if (rut.length < 2) return rut;
-
-    const cuerpo = rut.slice(0, -1); // Todo menos el dígito verificador
-    const dv = rut.slice(-1); // Dígito verificador
-
+    // Separa el cuerpo del RUT
+    const cuerpo = rut.slice(0, -1);
+    // Separa el dígito verificador
+    const dv = rut.slice(-1);
+    // Retorna el RUT formateado: cuerpo + guion + DV
     return `${cuerpo}-${dv}`;
   };
 
-  // Validacion numero Tarjeta
+  // Valida numero Tarjeta
   const validarTarjeta = (numero) => {
     const soloNumeros = numero.replace(/\D/g, "");
     return soloNumeros.length === 16;
   };
 
   const validarFechaVencimiento = (fecha) => {
-    // Validar formato MM/YY
+    // Valida formato MM/YY
     const regex = /^(0[1-9]|1[0-2])\/\d{2}$/;
     if (!regex.test(fecha)) return false;
-
+    // Extrae mes y año (convierto año a formato 20YY)
     const [mesStr, anioStr] = fecha.split("/");
     const mes = parseInt(mesStr, 10);
-    const anio = parseInt("20" + anioStr, 10); // Convertir YY a 20YY
-
+    const anio = parseInt("20" + anioStr, 10);
+    // Obtiene fecha actual (mes y año)
     const hoy = new Date();
-    const mesActual = hoy.getMonth() + 1; // getMonth() va de 0 a 11
+    const mesActual = hoy.getMonth() + 1; // getMonth() devuelve 0 para enero, 11 para diciembre, sumamos 1 para obtener 1-12
     const anioActual = hoy.getFullYear();
 
-    // Comparar años
+    // Compara años
     if (anio < anioActual) return false;
     if (anio === anioActual && mes < mesActual) return false;
 
     return true;
   };
-  // Validar formato de CVV
+  // Valida formato de CVV
   const validarCVV = (cvv) => {
     return /^\d{3}$/.test(cvv);
   };
   const formatearCVV = (valor) => {
-    // Solo permitir números y máximo 3 dígitos
+    // Solo permite números y máximo 3 dígitos
     return valor.replace(/\D/g, "").slice(0, 3);
   };
 
@@ -202,18 +204,18 @@ const CartSlider = ({
     const cuerpo = partes[0];
     const dv = partes[1].toUpperCase();
 
-    // Verificar que el cuerpo tenga exactamente 7 u 8 dígitos
+    // Verifica que el cuerpo tenga exactamente 7 u 8 dígitos
     // y que el DV sea un dígito (0-9) o la letra K
     return (cuerpo.length === 7 || cuerpo.length === 8) && /^[0-9K]$/.test(dv);
   };
 
-  // Validar formato email
+  // Valida formato email
   const validarEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,4}$/;
     return regex.test(email);
   };
 
-  // Calcular costo de envío
+  // Calcula costo de envío
   const costoEnvio = metodoEntrega === "despacho" ? 3990 : 0;
   const totalConEnvio = total + costoEnvio;
 
@@ -226,21 +228,21 @@ const CartSlider = ({
   // Función para manejar el pago
   const handlePago = async () => {
     try {
-      // Transformar datos al formato del backend
+      // Transforma datos al formato del backend
       const ventaData = transformarDatosVenta(
         cartItems,
-        user, // ← Necesitaremos pasar user como prop
+        user,
         datosEnvio,
         datosPago,
         totalConEnvio
       );
 
-      // Enviar al backend
+      // Envia al backend
       const resultado = await procesarVenta(ventaData);
 
       if (resultado.success) {
         alert(`¡Compra exitosa! ID de venta: ${resultado.ventaId}`);
-        // Limpiar carrito y cerrar modal
+        // Limpia carrito y cierra el modal
         onClearCart();
         setShowCheckout(false);
         onClose();
@@ -458,7 +460,7 @@ const CartSlider = ({
 
                   <div className="delivery-option disabled">
                     {" "}
-                    {/* Ponerle delivery-option disabled por mientras */}
+                    {/* Pondremos delivery-option disabled por mientras */}
                     <label htmlFor="retiro" className="delivery-label">
                       <div className="delivery-info">
                         <div className="delivery-title-container">
@@ -485,7 +487,7 @@ const CartSlider = ({
                 </div>
               </div>
 
-              {/* Datos de envío --> ¡Después debo usar los datos de Region y comuna de la BD! */}
+              {/* Datos de envío --> ¡Después tengo que usar los datos de Region y comuna de la BD! */}
               {metodoEntrega === "despacho" && (
                 <div className="checkout-section">
                   <h3 className="section-title">Datos de envío</h3>

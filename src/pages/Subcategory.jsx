@@ -5,6 +5,9 @@ import { faSpinner, faHome } from "@fortawesome/free-solid-svg-icons";
 import "../styles/Home.css";
 import "../styles/Subcategory.css";
 import ProductCard from "../components/ProductCard";
+import FilterBar from "../components/FilterBar";
+import FilterModal from "../components/FilterModal";
+import { useProductFilter } from "../hooks/useProductFilter";
 import { getProductosPorSubcategoria } from "../data/productService";
 
 const Subcategory = ({ onAddToCart }) => {
@@ -13,6 +16,9 @@ const Subcategory = ({ onAddToCart }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [nombreSubcategoria, setNombreSubcategoria] = useState("");
+
+  // Usa el hook de filtros para obtener productos filtrados
+  const productosFiltrados = useProductFilter(productos);
 
   useEffect(() => {
     const fetchProductos = async () => {
@@ -40,7 +46,7 @@ const Subcategory = ({ onAddToCart }) => {
     };
 
     fetchProductos();
-    // Scroll al inicio cuando se cambia de subcategoría
+    // Scroll al inicio cuando cambia de subcategoría
     window.scrollTo(0, 0);
   }, [id]);
 
@@ -70,7 +76,11 @@ const Subcategory = ({ onAddToCart }) => {
       </div>
 
       <div className="section">
-        <h1 className="subcategory-title">{nombreSubcategoria}</h1>
+        {/* Agregamos FilterBar */}
+        <FilterBar
+          titulo={nombreSubcategoria}
+          cantidadProductos={productosFiltrados.length} // Usa productos filtrados
+        />
 
         {loading ? (
           <div className="loading-spinner">
@@ -85,12 +95,9 @@ const Subcategory = ({ onAddToCart }) => {
             </Link>
           </div>
         ) : (
-          <>
-            <p className="products-count">
-              {productos.length} producto(s) encontrado(s)
-            </p>
-            <div className="products-grid">
-              {productos.map((producto) => (
+          <div className="products-grid">
+            {productosFiltrados.length > 0 ? ( // Usa productos filtrados
+              productosFiltrados.map((producto) => (
                 <ProductCard
                   key={producto.idProducto}
                   producto={{
@@ -104,11 +111,34 @@ const Subcategory = ({ onAddToCart }) => {
                   }}
                   onAddToCart={onAddToCart}
                 />
-              ))}
-            </div>
-          </>
+              ))
+            ) : (
+              // Mensaje cuando hay productos pero ninguno pasa los filtros
+              <div className="no-results">
+                <p>
+                  No se encontraron productos que coincidan con los filtros
+                  seleccionados.
+                </p>
+                <p>
+                  Prueba ajustando los filtros o{" "}
+                  <button
+                    className="link-button"
+                    onClick={() => {
+                      window.location.reload();
+                    }}
+                  >
+                    limpiar todos los filtros
+                  </button>
+                  .
+                </p>
+              </div>
+            )}
+          </div>
         )}
       </div>
+
+      {/* Agregamos FilterModal */}
+      <FilterModal productosDisponibles={productos} />
     </div>
   );
 };

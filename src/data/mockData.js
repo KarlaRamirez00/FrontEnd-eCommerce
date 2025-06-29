@@ -1,5 +1,4 @@
-// Aquí ponemos datos ficticios para pruebas
-// Ya no lo estoy usando porque ahora uso datos que traigo desde el backend :)
+// Aquí poníamos datos ficticios para rellenar, pero ahora no se usa porque conectamos con el backend
 
 const categoriasMock = [
   {
@@ -346,7 +345,6 @@ const categoriasMock = [
       },
     ],
   },
-  // Aquí podemos seguir agregando más categorías principales con sus subcategorías
 ];
 
 export default categoriasMock;

@@ -37,12 +37,12 @@ export const transformarDatosVenta = (
   datosPago,
   totalConEnvio
 ) => {
-  // 1. Transformar productos del carrito
+  // 1. Transforma productos del carrito
   const productos = cartItems.map((item) => ({
     producto: item.id,
     opcion: item.opcionElegida
       ? item.opcionElegida.idOpcion
-      : item.stock?.[0]?.idOpcion || 1, // Usa stock si existe, sino fallback a 1 * CORREGIR ESTO PARA control de inventario!
+      : item.stock?.[0]?.idOpcion || 1,
     cant: item.quantity,
   }));
 
@@ -55,7 +55,7 @@ export const transformarDatosVenta = (
     : {
         cliente: null,
         clienteInvitado: {
-          rutCliente: datosEnvio.rut.replace(/[.-]/g, ""), // Ignora puntos y guión, para no exceder el largo, ya que el backend acepta solo VARCHAR(10)
+          rutCliente: datosEnvio.rut.replace(/[-]/g, ""), // Ignora guión, para no exceder el largo, ya que el backend acepta solo VARCHAR(10)
           nomCliente: datosEnvio.nombre,
           apeCliente: datosEnvio.apellido,
           mailCliente: "email@ejemplo.com",
@@ -64,7 +64,7 @@ export const transformarDatosVenta = (
 
   // 3. Datos de pago
   const pago = {
-    nroTarjeta: datosPago.numeroTarjeta.replace(/\s/g, ""), // Quitamos espacios
+    nroTarjeta: datosPago.numeroTarjeta.replace(/\s/g, ""), // Quita espacios
     fecVenTarjeta: datosPago.fechaVencimiento,
     cvv: datosPago.cvv,
     monto: totalConEnvio,

@@ -20,9 +20,7 @@ code {
     monospace;
 }
 
-/* Agregar estilos personalizados aquí */
 .custom-class {
-  /* Ejemplo de estilo personalizado */
   color: #333;
   padding: 10px;
   border-radius: 5px;
@@ -30,7 +28,7 @@ code {
 
 /* ===== STICKY FOOTER ===== */
 
-/* Asegurar que html y body ocupen toda la altura */
+/* Asegura que html y body ocupen toda la altura */
 html,
 body {
   height: 100%;
@@ -52,7 +50,7 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background-color: #f8f9fa; /* Mismo color que subcategory-container */
+  background-color: #f8f9fa;
 }
 
 /* Asegurar que el footer se mantenga al final */
@@ -63,16 +61,14 @@ footer {
 
 /* Para páginas con poco contenido, asegurar espacio mínimo */
 .page-container {
-  min-height: calc(
-    100vh - 200px
-  ); /* Ajustar según altura del header + footer */
+  min-height: calc(100vh - 200px);
   padding: 20px 0;
 }
 
 /* Contenedor específico para resultados de búsqueda y páginas similares */
 .search-results-container,
 .product-details-container {
-  min-height: calc(100vh - 300px); /* Ajustar según tu header y footer */
+  min-height: calc(100vh - 300px);
   padding: 20px;
 }
 

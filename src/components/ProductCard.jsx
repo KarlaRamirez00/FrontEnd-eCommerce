@@ -26,21 +26,21 @@ const ProductCard = ({ producto, onAddToCart }) => {
 
     setIsAdding(true);
 
-    /**/ // Para productos con 1 opción, creamos la opción automáticamente
+    // Para productos con 1 opción, crea la opción automáticamente
     const productoConOpcion = {
       ...producto,
-      // Agregamos opción por defecto para productos con 1 opción
+      // Agrega opción por defecto para productos con 1 opción
       opcionElegida: {
-        idOpcion: null, // Se llenará cuando tengamos los datos completos
-        nombreOpcion: "Opción", // Temporal
-        valorOpcion: "Única", // Temporal
+        idOpcion: null,
+        nombreOpcion: "Opción",
+        valorOpcion: "Única",
       },
     };
 
-    // Llamamos a la función de añadir al carrito
+    // Llama a la función de añadir al carrito
     onAddToCart(productoConOpcion);
 
-    // Reseteamos el estado después de un breve tiempo
+    // Resetea el estado después de un breve tiempo
     setTimeout(() => {
       setIsAdding(false);
     }, 800);
@@ -52,12 +52,12 @@ const ProductCard = ({ producto, onAddToCart }) => {
     navigate(`/producto/${producto.id}`);
   };
 
-  // Verificar si la imagen existe
+  // Verifica si la imagen existe
   const handleImageError = (e) => {
     e.target.src = "/assets/placeholder-product.png"; // Imagen de respaldo
   };
 
-  // Determinar texto y acción del botón basado en cantidadOpciones
+  // Determina texto y acción del botón basado en cantidadOpciones
   const getButtonConfig = () => {
     if (producto.cantidadOpciones === 1) {
       return {

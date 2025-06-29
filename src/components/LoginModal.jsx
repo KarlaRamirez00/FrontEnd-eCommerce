@@ -6,9 +6,8 @@ import axios from "axios";
 export default function LoginModal({
   onClose,
   onLoginSuccess,
-  onOpenRecuperarPassword,
-  initialMode = "signin", // NUEVO: permite abrir en modo específico
-  resetUserId = null, // NUEVO: para cuando viene del enlace de recuperación
+  initialMode = "signin",
+  resetUserId = null,
 }) {
   const [authMode, setAuthMode] = useState(initialMode);
   const [recoveryStep, setRecoveryStep] = useState(1); // 1: solicitar email, 2: cambiar contraseña
@@ -28,7 +27,7 @@ export default function LoginModal({
 
   const [passwordError, setPasswordError] = useState("");
 
-  // NUEVO: Manejar cuando se abre en modo recuperación desde enlace
+  // Maneja cuando se abre en modo recuperación desde enlace
   useEffect(() => {
     if (initialMode === "recover" && resetUserId) {
       setRecoveryStep(2); // Ir directo a cambiar contraseña
@@ -36,7 +35,7 @@ export default function LoginModal({
     }
   }, [initialMode, resetUserId]);
 
-  // NUEVO: Obtener datos del usuario para mostrar nombre
+  // Obtiene datos del usuario para mostrar nombre
   const fetchUserData = async (id) => {
     try {
       const response = await axios.get(`http://localhost:5000/usuarios/${id}`);
@@ -82,7 +81,7 @@ export default function LoginModal({
     });
   };
 
-  // Funciones de validación (mantener las existentes)
+  // Funciones de validación
   const formatearRUT = (rut) => {
     rut = rut.replace(/[^0-9kK]/g, "").toUpperCase();
     if (rut.length < 2) return rut;
@@ -153,7 +152,7 @@ export default function LoginModal({
     return false;
   };
 
-  // ACTUALIZADO: Función para recuperar contraseña (antes era separada)
+  // Función para recuperar contraseña
   const handleForgotPassword = () => {
     changeAuthMode("recover");
   };
@@ -163,7 +162,7 @@ export default function LoginModal({
     const baseURL = "http://localhost:5000";
 
     if (authMode === "signin") {
-      // Lógica de login (mantener igual)
+      // Lógica de login
       try {
         const response = await axios.post(`${baseURL}/login`, {
           mail: formData.email,
@@ -186,7 +185,7 @@ export default function LoginModal({
         alert("Error en el login");
       }
     } else if (authMode === "signup") {
-      // Lógica de registro (mantener igual)
+      // Lógica de registro
       if (formData.password !== formData.confirmPassword) {
         alert("Las contraseñas no coinciden");
         return;
@@ -204,7 +203,6 @@ export default function LoginModal({
 
         const response = await axios.post(`${baseURL}/register`, data);
         const result = response.data;
-        console.log(result);
 
         if (response.status === 200) {
           alert(
@@ -219,7 +217,7 @@ export default function LoginModal({
         alert("Error en el registro");
       }
     } else if (authMode === "recover") {
-      // NUEVA: Lógica de recuperación
+      // Lógica de recuperación
       if (recoveryStep === 1) {
         // Paso 1: Solicitar recuperación por email
         try {
@@ -290,7 +288,7 @@ export default function LoginModal({
     }
   };
 
-  // NUEVA: Función para obtener el título correcto
+  // Función para obtener el título correcto
   const getTitle = () => {
     if (authMode === "signin") return "Iniciar Sesión";
     if (authMode === "signup") return "Registrarse";

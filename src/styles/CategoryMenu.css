@@ -77,11 +77,11 @@
 .user-menu-slider {
   position: fixed;
   top: 0;
-  right: -400px; /* Empieza fuera del lado DERECHO */
+  right: -400px;
   width: 320px;
   height: 100%;
   background-color: #fff;
-  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2); /* Sombra hacia la izquierda */
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
   transition: right 0.3s ease-in-out;
   z-index: 1000;
   padding: 1rem;
@@ -91,4 +91,159 @@
 
 .user-menu-slider.open {
   right: 0;
+}
+
+/* ===== FILTER MODAL STYLES ===== */
+
+/* Header del modal de filtros */
+.filter-header {
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* Botón limpiar filtros */
+.clear-filters-btn {
+  width: 100%;
+  background: none;
+  border: 1px solid #f6af33;
+  color: #f6af33;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  margin-bottom: 1.5rem;
+}
+
+.clear-filters-btn:hover {
+  background-color: #f6af33;
+  color: white;
+}
+
+/* Secciones de filtros */
+.filter-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.filter-section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin: 1rem 0 1rem 0;
+  text-align: left;
+}
+
+/* Etiquetas del slider */
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.slider-label {
+  font-size: 0.8rem;
+  color: #666;
+  font-weight: 500;
+}
+
+/* Contenedor del slider */
+.professional-slider {
+  margin: 10px 0;
+  padding: 0 7px;
+}
+
+/* Precio seleccionado debajo del slider */
+.selected-price {
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+  margin-top: 15px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* Checkbox personalizado */
+.filter-option {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  padding-left: 28px;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.filter-option input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  left: 0;
+  height: 18px;
+  width: 18px;
+  background-color: #fff;
+  border: 2px solid #ddd;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+.filter-option:hover input ~ .checkmark {
+  border-color: #f6af33;
+}
+
+.filter-option input:checked ~ .checkmark {
+  background-color: #f6af33;
+  border-color: #f6af33;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.filter-option input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.filter-option .checkmark:after {
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Scrollbar personalizado */
+.filter-sections::-webkit-scrollbar {
+  width: 6px;
+}
+
+.filter-sections::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.filter-sections::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.filter-sections::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }

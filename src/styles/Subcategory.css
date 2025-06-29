@@ -4,8 +4,7 @@
   align-items: center;
   width: 100%;
   background-color: #f8f9fa;
-  padding: 20px 0; /* 20px arriba y abajo - CAMBIO PRINCIPAL */
-  /* min-height: 80vh; <- ELIMINADO - esto causaba el espacio extra */
+  padding: 20px 0;
 }
 
 /* Breadcrumb Navigation */
@@ -35,12 +34,12 @@
 
 .subcategory-title {
   display: block;
-  margin: 0 auto 30px auto; /* 30px bottom margin */
+  margin: 0 auto 30px auto;
   font-size: 2rem;
   font-weight: 600;
   color: #333;
   position: relative;
-  max-width: max-content; /* para que el margen auto funcione bien */
+  max-width: max-content;
 }
 
 .subcategory-title:after {
@@ -67,9 +66,9 @@
   font-size: 0.9rem;
   color: #777;
   margin-bottom: 20px;
-  text-align: center; /* Centra el texto dentro del elemento */
-  display: block; /* Asegura que el elemento ocupe el ancho completo para que text-align funcione */
-  width: 100%; /* Ocupa todo el ancho disponible */
+  text-align: center;
+  display: block;
+  width: 100%;
 }
 
 /* Loading State */
@@ -145,7 +144,7 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .subcategory-container {
-    padding: 15px 0; /* Reduce padding en móviles */
+    padding: 15px 0;
   }
 
   .subcategory-title {
@@ -159,7 +158,7 @@
 
 @media (max-width: 480px) {
   .subcategory-container {
-    padding: 10px 0; /* Aún menos padding en pantallas muy pequeñas */
+    padding: 10px 0;
   }
 
   .breadcrumb {
@@ -176,8 +175,6 @@
   }
 }
 
-/*=============================================*/
-
 .home-subcategory-link.active {
   background-color: #f6af33 !important;
   color: white !important;
@@ -186,14 +183,14 @@
 /* Estilos específicos para filtros de ofertas */
 .filter-section {
   display: flex;
-  align-items: center; /* Alinea verticalmente al centro */
-  justify-content: center; /* Centra horizontalmente */
+  align-items: center;
+  justify-content: center;
   margin-top: 40px;
   margin-bottom: 10px;
 }
 
 .filter-section p {
-  margin-right: 20px; /* Espacio entre el párrafo y los botones */
+  margin-right: 20px;
 }
 
 .filter-buttons {

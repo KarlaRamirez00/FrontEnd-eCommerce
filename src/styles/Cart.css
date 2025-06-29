@@ -2,7 +2,7 @@
   position: fixed;
   top: 0;
   right: -400px; /* Oculto fuera de pantalla inicialmente */
-  width: 320px; /* ← AQUÍ defines el ancho del carrito */
+  width: 320px; /* ancho del carrito */
   height: 100%;
   background-color: #fff;
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
@@ -134,7 +134,7 @@
   padding: 0.3rem 0.5rem;
   margin-bottom: 1rem;
   margin-right: 1rem;
-  transition: font-weight 0.2s ease; /* suaviza el cambio */
+  transition: font-weight 0.2s ease;
 }
 
 .clear-cart-button:hover {

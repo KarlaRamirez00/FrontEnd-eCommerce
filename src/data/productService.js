@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// Obtener todas las categorías desde el backend
+// Obtiene todas las categorías desde el backend
 export const getCategorias = async () => {
   try {
     const response = await axios.get(
@@ -13,7 +13,7 @@ export const getCategorias = async () => {
   }
 };
 
-// Obtener todas las subcategorías desde el backend
+// Obtiene todas las subcategorías desde el backend
 export const getSubcategorias = async () => {
   try {
     const response = await axios.get(
@@ -26,12 +26,12 @@ export const getSubcategorias = async () => {
   }
 };
 
-// Obtener productos aleatorios desde la primera página (para mostrar destacados)
+// Obtiene productos aleatorios desde la primera página (para mostrar destacados)
 export const getProductosDestacadosAleatorios = async (cantidad = 4) => {
   try {
     const response = await axios.get("http://localhost:5000/producto?pagina=1");
     const todos = response.data.Productos || [];
-    // Mezclar aleatoriamente y cortar según la cantidad pedida
+    // Mezcla aleatoriamente y corta según la cantidad pedida
     return [...todos].sort(() => 0.5 - Math.random()).slice(0, cantidad);
   } catch (error) {
     console.error("Error al obtener productos:", error);
@@ -39,7 +39,7 @@ export const getProductosDestacadosAleatorios = async (cantidad = 4) => {
   }
 };
 
-// Obtener productos que pertenecen a una subcategoría específica
+// Obtiene productos que pertenecen a una subcategoría específica
 export const getProductosPorSubcategoria = async (
   subcategoriaId,
   pagina = 1
@@ -58,7 +58,7 @@ export const getProductosPorSubcategoria = async (
   }
 };
 
-// Obtener productos que pertenecen a una categoría específica
+// Obtiene productos que pertenecen a una categoría específica
 export const getProductosPorCategoria = async (categoriaId, pagina = 1) => {
   try {
     const response = await axios.get("http://localhost:5000/producto", {
@@ -74,7 +74,7 @@ export const getProductosPorCategoria = async (categoriaId, pagina = 1) => {
   }
 };
 
-// Obtener productos que coinciden con una palabra clave de búsqueda
+// Obtiene productos que coinciden con una palabra clave de búsqueda
 export const getProductosPorBusqueda = async (query, pagina = 1) => {
   try {
     const response = await axios.get("http://localhost:5000/producto", {
@@ -90,7 +90,7 @@ export const getProductosPorBusqueda = async (query, pagina = 1) => {
   }
 };
 
-// Obtener detalles de cada producto
+// Obtiene detalles de cada producto
 export const getDetalleProducto = async (id) => {
   try {
     const response = await axios.get(`http://localhost:5000/producto/${id}`);

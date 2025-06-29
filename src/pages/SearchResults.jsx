@@ -5,7 +5,7 @@ import {
   getSubcategorias,
 } from "../data/productService";
 import ProductCard from "../components/ProductCard";
-import "../styles/SearchResults.css"; // Necesitaremos crear este archivo
+import "../styles/SearchResults.css";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -20,7 +20,7 @@ const SearchResults = ({ onAddToCart }) => {
   const [subcategoriaEncontrada, setSubcategoriaEncontrada] = useState(null);
   const [subcategorias, setSubcategorias] = useState([]);
 
-  // Cargar subcategorías al montar el componente
+  // Carga subcategorías al montar el componente
   useEffect(() => {
     const cargarSubcategorias = async () => {
       try {
@@ -57,11 +57,11 @@ const SearchResults = ({ onAddToCart }) => {
       setSubcategoriaEncontrada(null);
 
       if (searchTerm) {
-        // Primero buscar productos
+        // Primero busca productos
         const data = await getProductosPorBusqueda(searchTerm);
         setProductos(data);
 
-        // Si no hay productos, buscar en subcategorías
+        // Si no hay productos, busca en subcategorías
         if (data.length === 0 && subcategorias.length > 0) {
           const subcategoriaCoincidente = buscarEnSubcategorias(searchTerm);
           if (subcategoriaCoincidente) {
@@ -84,7 +84,7 @@ const SearchResults = ({ onAddToCart }) => {
           <p>Cargando...</p>
         </div>
       ) : productos.length > 0 ? (
-        // Mostrar productos encontrados
+        // Muestra productos encontrados
         <div className="best-sellers">
           {productos.map((producto) => (
             <ProductCard
@@ -103,7 +103,7 @@ const SearchResults = ({ onAddToCart }) => {
           ))}
         </div>
       ) : subcategoriaEncontrada ? (
-        // Mostrar sugerencia de subcategoría
+        // Muestra sugerencia de subcategoría
         <div className="subcategory-suggestion">
           <div className="suggestion-content">
             <h3>¿Buscabas esta categoría?</h3>
@@ -128,7 +128,7 @@ const SearchResults = ({ onAddToCart }) => {
           </div>
         </div>
       ) : (
-        // Mostrar página "No encontrado" con imagen
+        // Muestra página con imagen y texto "No se encontraron resultados"
         <div className="no-results-container">
           <div className="no-results-content">
             <img

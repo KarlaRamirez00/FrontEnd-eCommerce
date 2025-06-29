@@ -1,4 +1,4 @@
-import { StrictMode } from "react"; // Modo estricto para detectar errores en desarrollo
+import { StrictMode } from "react";
 import { createRoot } from "react-dom/client"; // Nueva forma de renderizar React 18+
 import "bootstrap/dist/css/bootstrap.min.css"; // CSS de Bootstrap
 import "bootstrap/dist/js/bootstrap.bundle.min.js"; // JS de Bootstrap

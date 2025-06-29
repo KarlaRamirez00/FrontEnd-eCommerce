@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import LoginModal from "../components/LoginModal"; // Ajusta la ruta según tu estructura
+import LoginModal from "../components/LoginModal";
 
 /**
  * Página que procesa enlaces de recuperación de contraseña: /restablecer-password?id=123
@@ -13,16 +13,15 @@ const ResetPassword = () => {
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    // Obtener el ID de la URL
+    // Obtiene el ID de la URL
     const params = new URLSearchParams(location.search);
     const idParam = params.get("id");
 
     if (idParam) {
-      console.log("ID para restablecer contraseña:", idParam);
       setUserId(idParam);
       setShowModal(true);
     } else {
-      // Si no hay ID, redirigir al home
+      // Si no hay ID, redirige al home
       navigate("/");
     }
   }, [location, navigate]);
@@ -33,8 +32,6 @@ const ResetPassword = () => {
   };
 
   const handleLoginSuccess = (token) => {
-    // Manejar login exitoso igual que en tu App principal
-    console.log("Login exitoso:", token);
     setShowModal(false);
     navigate("/");
   };
@@ -45,9 +42,9 @@ const ResetPassword = () => {
         <LoginModal
           onClose={handleCloseModal}
           onLoginSuccess={handleLoginSuccess}
-          onOpenRecuperarPassword={() => {}} // No necesario en este contexto
-          initialMode="recover" // Abrir en modo recuperación
-          resetUserId={userId} // Pasar el ID del usuario
+          //onOpenRecuperarPassword={() => {}}
+          initialMode="recover"
+          resetUserId={userId}
         />
       )}
     </>

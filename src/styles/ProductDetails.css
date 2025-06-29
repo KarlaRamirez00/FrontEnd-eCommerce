@@ -23,17 +23,17 @@
 .product-image-wrapper {
   flex: 1 1 40%;
   text-align: center;
-  position: relative; /* ← ESTA LÍNEA ES CLAVE */
+  position: relative;
 }
 
 .product-image-main {
   width: 100%;
   max-width: 350px;
-  height: auto;
-  object-fit: cover;
+  height: 350px;
+  object-fit: contain;
   border-radius: 10px;
   border: 1px solid #ddd;
-  background-color: #fafafa;
+  background-color: white;
 }
 
 /* Información principal: título, precio, botón */
@@ -41,7 +41,7 @@
   flex: 1 1 55%;
 }
 
-/* Título del producto con línea amarilla ajustada */
+/* Título del producto */
 .product-info h1 {
   font-size: 2rem;
   margin-bottom: 25px;
@@ -61,7 +61,7 @@
   left: 0;
 }
 
-/* Precio del producto (placeholder por ahora) */
+/* Precio del producto */
 .product-price {
   font-size: 1.2rem;
   color: #f6af33;
@@ -281,8 +281,8 @@
 .price-with-discount {
   margin-bottom: 20px;
   display: flex;
-  align-items: baseline; /* Alinea por la línea base del texto */
-  gap: 12px; /* Espacio entre precio actual y original */
+  align-items: baseline;
+  gap: 12px;
 }
 
 /* Precio actual (con descuento) */
@@ -309,7 +309,88 @@
   color: #f6af33;
 }
 
-/* Estilos para AboutUs */
+/* ==============================================
+   ESTILOS PARA EL CARRUSEL
+   ============================================== */
+
+/* Botones de navegación del carrusel */
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.4);
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.carousel-btn:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.carousel-btn-prev {
+  left: 10px;
+}
+
+.carousel-btn-next {
+  right: 10px;
+}
+
+/* Miniaturas debajo de la imagen */
+.carousel-thumbnails {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.carousel-thumbnails .thumbnail {
+  width: 60px;
+  height: 60px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: none;
+  padding: 0;
+}
+
+.carousel-thumbnails .thumbnail:hover {
+  border-color: #f6af33;
+}
+
+.carousel-thumbnails .thumbnail.active {
+  border-color: #f6af33;
+  box-shadow: 0 0 0 1px #f6af33;
+}
+
+.carousel-thumbnails .thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Ocultar temporalmente elementos del carrusel que aún no se usan */
+.carousel-indicators,
+.image-counter,
+.no-images {
+  display: none;
+}
+
+/* ==============================================
+   ESTILOS PARA página AboutUs
+   ============================================== */
 
 /* Breadcrumb */
 .breadcrumb {

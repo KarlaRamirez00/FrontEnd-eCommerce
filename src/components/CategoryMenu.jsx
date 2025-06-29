@@ -16,9 +16,6 @@ const CategoryMenu = ({ isOpen, onClose }) => {
       const categoriasBD = await getCategorias();
       const subcategoriasBD = await getSubcategorias();
 
-      console.log("categoriasBD:", categoriasBD);
-      console.log("subcategoriasBD:", subcategoriasBD);
-
       const categoriasConSub = categoriasBD.map((cat) => ({
         ...cat,
         subcategorias: subcategoriasBD.filter(

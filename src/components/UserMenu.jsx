@@ -1,3 +1,4 @@
+// Aun no le doy funcionalidad a este componente.
 import React from "react";
 import "../styles/CategoryMenu.css"; // Reutilizo el estilo de CategoryMenu CSS
 

@@ -25,31 +25,31 @@
 }
 
 .top-bar .search-form {
-  display: flex; /* Asegúrate de que sea flex para controlar el ancho de los hijos */
+  display: flex;
   flex-grow: 1;
   margin-left: 10px;
   margin-right: 10px;
 }
 
 .top-bar .search-form input[type="search"] {
-  flex-grow: 1; /* El input ocupa el espacio restante */
+  flex-grow: 1;
 }
 
 .top-bar .search-form button[type="submit"] {
-  width: auto; /* El botón se ajusta al contenido */
-  padding: 0.5rem 1rem; /* Ajusta el padding para el tamaño visual */
+  width: auto;
+  padding: 0.5rem 1rem;
   background-color: #f0f0f0;
 }
 .top-bar .search-form button[type="submit"]:hover {
-  background-color: #cccccc; /* Un gris un poco más oscuro al pasar el mouse */
-  color: white; /* Texto blanco al pasar el mouse */
-  transform: scale(1.08); /* Escala el botón a 1.05 veces su tamaño original */
+  background-color: #cccccc;
+  color: white;
+  transform: scale(1.08);
 }
 
 .top-bar .icon-group {
   margin: 10px;
   display: flex;
-  gap: 20px; /* Espacio entre los iconos */
+  gap: 20px;
 }
 
 .logo {
@@ -58,7 +58,7 @@
 }
 
 .icon-group {
-  gap: 20px; /* Espacio entre los iconos */
+  gap: 20px;
 }
 
 .icon-link {
@@ -91,12 +91,12 @@
 
 @media (max-width: 641px) {
   .top-header {
-    flex-direction: column; /* Cambia la dirección del flex a columna */
-    align-items: center; /* Centra los elementos en la columna */
+    flex-direction: column;
+    align-items: center;
   }
 
   .icon-group {
-    justify-content: center; /* Centra los íconos */
-    margin-top: 10px; /* Añade un margen superior para separar del campo de búsqueda */
+    justify-content: center;
+    margin-top: 10px;
   }
 }

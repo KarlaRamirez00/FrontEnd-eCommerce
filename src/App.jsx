@@ -7,6 +7,7 @@ import AppRouter from "./router/AppRouter";
 import LoginModal from "./components/LoginModal";
 import { useNavigate } from "react-router-dom";
 import { getCategorias, getSubcategorias } from "./data/productService";
+import { FilterProvider } from "./contexts/FilterContext";
 
 const App = () => {
   const [cartOpen, setCartOpen] = useState(false);
@@ -17,14 +18,14 @@ const App = () => {
   const [categorias, setCategorias] = useState([]);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
 
-  // ESTADOS PARA RECUPERAR CONTRASEÑA (ANTES DE LOS useEffect)
+  // ESTADOS PARA RECUPERAR CONTRASEÑA
   const [showRecuperarPassword, setShowRecuperarPassword] = useState(false);
 
   const navigate = useNavigate();
   const isLoggedIn = !!user;
   const userName = user?.nombre || "";
 
-  // NUEVAS FUNCIONES PARA MANEJO DE CARRITO POR USUARIO
+  // FUNCIONES PARA MANEJO DE CARRITO POR USUARIO
   const getCartKey = () => {
     return user ? `cart_${user.id}` : "cart_temp";
   };
@@ -63,7 +64,7 @@ const App = () => {
     return [];
   };
 
-  // FUNCIONES PARA MANEJAR LOS MODALES (ANTES DE LOS useEffect)
+  // FUNCIONES PARA MANEJAR LOS MODALES
   const openRecuperarPassword = () => {
     setShowRecuperarPassword(true);
   };
@@ -80,7 +81,6 @@ const App = () => {
     setShowLoginModal(false);
   };
 
-  // AHORA LOS useEffect
   useEffect(() => {
     const fetchCategorias = async () => {
       const cats = await getCategorias();
@@ -117,24 +117,22 @@ const App = () => {
     }
   }, []);
 
-  // NUEVO: useEffect para cargar carrito cuando cambie el usuario
+  // useEffect para cargar carrito cuando cambie el usuario
   useEffect(() => {
-    // Cargar carrito del usuario actual (o temporal si no hay usuario)
+    // Carga carrito del usuario actual (o temporal si no hay usuario)
     const cartData = loadCartFromStorage();
     setCartItems(cartData);
   }, [user]); // Se ejecuta cuando cambia el usuario
 
-  // Abre el carrito al hacer clic en el ícono
   const handleCartIconClick = () => {
     setCartOpen(true);
   };
 
-  // Abre el modal de login
   const handleLoginClick = () => {
     setShowLoginModal(true);
   };
 
-  // MODIFICADO: Función que se ejecuta cuando haya login exitoso
+  // Función que se ejecuta cuando haya login exitoso
   const handleLoginSuccess = (tokenReceived) => {
     setToken(tokenReceived);
     const payload = JSON.parse(atob(tokenReceived.split(".")[1]));
@@ -168,7 +166,7 @@ const App = () => {
     setShowLoginModal(false);
   };
 
-  // MODIFICADO: Función para cerrar sesión
+  // Función para cerrar sesión
   const handleLogout = () => {
     // Limpiar datos de usuario
     localStorage.removeItem("token");
@@ -182,10 +180,10 @@ const App = () => {
     navigate("/");
   };
 
-  // MODIFICADO: Función para agregar productos al carrito
+  // Función para agregar productos al carrito
   const handleAddToCart = (producto) => {
     setCartItems((prevItems) => {
-      // Crear clave única que incluya producto + opción
+      // Crea clave única que incluya producto + opción
       const claveUnica = producto.opcionElegida
         ? `${producto.id}-${producto.opcionElegida.idOpcion}`
         : `${producto.id}`;
@@ -212,13 +210,13 @@ const App = () => {
         newItems = [...prevItems, { ...producto, quantity: 1 }];
       }
 
-      // CAMBIO: usar saveCartToStorage en lugar de localStorage.setItem
+      // Usa saveCartToStorage en lugar de localStorage.setItem
       saveCartToStorage(newItems);
       return newItems;
     });
   };
 
-  // MODIFICADO: Funciones para actualizar cantidades del carrito
+  // Funciones para actualizar cantidades del carrito
   const handleRemoveFromCart = (producto) => {
     setCartItems((prevItems) => {
       const productoClave = producto.opcionElegida
@@ -232,7 +230,7 @@ const App = () => {
         return itemClave !== productoClave;
       });
 
-      // CAMBIO: usar saveCartToStorage
+      // Usa saveCartToStorage
       saveCartToStorage(newItems);
       return newItems;
     });
@@ -241,7 +239,7 @@ const App = () => {
   const handleIncreaseQuantity = (producto) => {
     setCartItems((prevItems) => {
       const newItems = prevItems.map((item) => {
-        // Crear claves únicas para comparar
+        // Crea claves únicas para comparar
         const itemClave = item.opcionElegida
           ? `${item.id}-${item.opcionElegida.idOpcion}`
           : `${item.id}`;
@@ -254,7 +252,7 @@ const App = () => {
           : item;
       });
 
-      // CAMBIO: usar saveCartToStorage
+      // Usa saveCartToStorage
       saveCartToStorage(newItems);
       return newItems;
     });
@@ -275,17 +273,17 @@ const App = () => {
           : item;
       });
 
-      // CAMBIO: usar saveCartToStorage
+      // Usa saveCartToStorage
       saveCartToStorage(newItems);
       return newItems;
     });
   };
 
-  // MODIFICADO: Función para Vaciar el carrito
+  // Función para Vaciar el carrito
   const handleClearCart = () => {
     setCartItems([]);
 
-    // Limpiar del storage correcto
+    // Limpia del storage correcto
     const cartKey = getCartKey();
     if (user) {
       localStorage.removeItem(cartKey);
@@ -329,31 +327,34 @@ const App = () => {
         categorias={categorias}
       />
 
-      {/* Envolvemos en main-content */}
-      <main className="main-content">
-        {/* MODAL DE LOGIN/REGISTRO - CORREGIDO */}
-        {showLoginModal && (
-          <LoginModal
-            onClose={closeLoginModal}
-            onLoginSuccess={handleLoginSuccess}
+      {/* Provee el contexto de filtros a las rutas internas */}
+      <FilterProvider>
+        {/* Envolvemos en main-content */}
+        <main className="main-content">
+          {/* MODAL DE LOGIN/REGISTRO */}
+          {showLoginModal && (
+            <LoginModal
+              onClose={closeLoginModal}
+              onLoginSuccess={handleLoginSuccess}
+            />
+          )}
+
+          {/* Carrito de compras */}
+          <Cart
+            isOpen={cartOpen}
+            onClose={() => setCartOpen(false)}
+            cartItems={cartItems}
+            onRemoveFromCart={handleRemoveFromCart}
+            onIncreaseQuantity={handleIncreaseQuantity}
+            onDecreaseQuantity={handleDecreaseQuantity}
+            onClearCart={handleClearCart}
+            user={user}
           />
-        )}
 
-        {/* Carrito de compras */}
-        <Cart
-          isOpen={cartOpen}
-          onClose={() => setCartOpen(false)}
-          cartItems={cartItems}
-          onRemoveFromCart={handleRemoveFromCart}
-          onIncreaseQuantity={handleIncreaseQuantity}
-          onDecreaseQuantity={handleDecreaseQuantity}
-          onClearCart={handleClearCart}
-          user={user}
-        />
-
-        {/* Rutas principales de navegación */}
-        <AppRouter onAddToCart={handleAddToCart} onSearch={handleSearch} />
-      </main>
+          {/* Rutas principales de navegación */}
+          <AppRouter onAddToCart={handleAddToCart} onSearch={handleSearch} />
+        </main>
+      </FilterProvider>
 
       <Footer />
     </>

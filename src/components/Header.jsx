@@ -21,13 +21,13 @@ const Header = ({
   onToggleCategoryMenu,
   onSearch,
 }) => {
-  // Estado local para guardar lo que el usuario escribe en la barra de búsqueda (aun no lo uso)
+  // Estado para controlar el texto del buscador
   const [searchQuery, setSearchQuery] = React.useState("");
-  // Esta función actualiza el estado searchQuery a medida que el usuario escribe (aun no lo uso)
+
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
-  // Esta función se ejecuta cuando el usuario envía el formulario de búsqueda (aun no lo uso)
+
   const handleSearchSubmit = (event) => {
     event.preventDefault();
     if (onSearch) {

@@ -9,7 +9,7 @@ const ProductDetails = ({ onAddToCart }) => {
   const [producto, setProducto] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
 
-  // Nuevo estado para descuentos
+  // Estado para descuentos
   const [descuentoInfo, setDescuentoInfo] = useState(null);
 
   // Estado para la opción seleccionada
@@ -18,10 +18,12 @@ const ProductDetails = ({ onAddToCart }) => {
   // Estado para mostrar error si no selecciona opción
   const [mostrarError, setMostrarError] = useState(false);
 
+  // ESTADOS PARA EL CARRUSEL
+  const [imagenActiva, setImagenActiva] = useState(0);
+
   useEffect(() => {
     const fetchProducto = async () => {
       const data = await getDetalleProducto(id);
-      console.log("PRODUCTO COMPLETO del backend:", data);
       setProducto(data);
 
       // Si solo hay una opción, seleccionarla automáticamente
@@ -32,6 +34,7 @@ const ProductDetails = ({ onAddToCart }) => {
       // Reset estados cuando cambia de producto
       setOpcionSeleccionada(null);
       setMostrarError(false);
+      setImagenActiva(0); // Reset carrusel a primera imagen
 
       // Buscar información de descuentos
       await buscarDescuentos(id);
@@ -40,7 +43,7 @@ const ProductDetails = ({ onAddToCart }) => {
     fetchProducto();
   }, [id]);
 
-  // Nueva función para buscar descuentos
+  // Función para buscar descuentos
   const buscarDescuentos = async (productoId) => {
     try {
       const response = await axios.get(
@@ -66,20 +69,34 @@ const ProductDetails = ({ onAddToCart }) => {
           valorOferta: productoConDescuento.valorOferta,
           porcentajeDescuento,
         });
-
-        console.log("✅ Descuento encontrado:", {
-          original: productoConDescuento.valorOriginal,
-          oferta: productoConDescuento.valorOferta,
-          porcentaje: porcentajeDescuento,
-        });
       } else {
         setDescuentoInfo(null);
-        console.log("❌ Sin descuento para este producto");
       }
     } catch (error) {
       console.error("Error al buscar descuentos:", error);
       setDescuentoInfo(null);
     }
+  };
+
+  // FUNCIONES DEL CARRUSEL
+  const siguienteImagen = () => {
+    if (producto?.imagenes?.length > 0) {
+      setImagenActiva((prev) =>
+        prev === producto.imagenes.length - 1 ? 0 : prev + 1
+      );
+    }
+  };
+
+  const anteriorImagen = () => {
+    if (producto?.imagenes?.length > 0) {
+      setImagenActiva((prev) =>
+        prev === 0 ? producto.imagenes.length - 1 : prev - 1
+      );
+    }
+  };
+
+  const irAImagen = (indice) => {
+    setImagenActiva(indice);
   };
 
   const handleOpcionChange = (opcion) => {
@@ -115,7 +132,6 @@ const ProductDetails = ({ onAddToCart }) => {
       },
     };
 
-    console.log("PRODUCTO PARA CARRITO CON DESCUENTO:", productoParaCarrito);
     onAddToCart(productoParaCarrito);
 
     setTimeout(() => setIsAdding(false), 800);
@@ -124,26 +140,69 @@ const ProductDetails = ({ onAddToCart }) => {
   if (!producto) return <p>Cargando...</p>;
 
   const mostrarSelector = producto.stock.length > 1;
+  const tieneVariasImagenes = producto.imagenes && producto.imagenes.length > 1;
 
   return (
     <div className="product-details">
       <div className="product-main">
-        {/* Imagen principal con badge de descuento */}
+        {/* CARRUSEL DE IMÁGENES */}
         <div className="product-image-wrapper">
-          {producto.imagenes[0] && (
+          {producto.imagenes && producto.imagenes.length > 0 ? (
             <>
+              {/* Imagen principal */}
               <img
-                src={`http://localhost:5000/uploads/${producto.imagenes[0].imagen}`}
-                alt="Imagen principal del producto"
+                src={`http://localhost:5000/uploads/${producto.imagenes[imagenActiva].imagen}`}
+                alt={`Imagen ${imagenActiva + 1} del producto`}
                 className="product-image-main"
               />
+
               {/* Badge de descuento */}
               {descuentoInfo && (
                 <div className="discount-badge-detail">
                   -{descuentoInfo.porcentajeDescuento}%
                 </div>
               )}
+
+              {/* Flechas (solo si hay más de una imagen) */}
+              {producto.imagenes.length > 1 && (
+                <>
+                  <button
+                    className="carousel-btn carousel-btn-prev"
+                    onClick={anteriorImagen}
+                  >
+                    ‹
+                  </button>
+                  <button
+                    className="carousel-btn carousel-btn-next"
+                    onClick={siguienteImagen}
+                  >
+                    ›
+                  </button>
+                </>
+              )}
+
+              {/* Miniaturas (solo si hay más de una imagen) */}
+              {producto.imagenes.length > 1 && (
+                <div className="carousel-thumbnails">
+                  {producto.imagenes.map((imagen, indice) => (
+                    <button
+                      key={indice}
+                      className={`thumbnail ${
+                        indice === imagenActiva ? "active" : ""
+                      }`}
+                      onClick={() => irAImagen(indice)}
+                    >
+                      <img
+                        src={`http://localhost:5000/uploads/${imagen.imagen}`}
+                        alt={`Miniatura ${indice + 1}`}
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
             </>
+          ) : (
+            <p>Sin imágenes disponibles</p>
           )}
         </div>
 
@@ -177,7 +236,7 @@ const ProductDetails = ({ onAddToCart }) => {
             )}
           </div>
 
-          {/* Resto del código igual - selector de opciones */}
+          {/* Selector de opciones */}
           {mostrarSelector && (
             <div className="product-options">
               <h4 className="options-title">{producto.opcion}:</h4>
@@ -250,7 +309,7 @@ const ProductDetails = ({ onAddToCart }) => {
         </div>
       </div>
 
-      {/* Resto de la info del producto - sin cambios */}
+      {/* Resto de la info del producto */}
       <div className="product-extra-info">
         <p>
           <strong>Descripción:</strong> {producto.descripcion}
