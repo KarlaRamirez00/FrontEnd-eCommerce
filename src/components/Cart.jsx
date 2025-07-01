@@ -500,8 +500,14 @@ const CartSlider = ({
 
               {/* Datos de envío */}
               <div className="checkout-section">
-                <h3 className="section-title">Datos de envío</h3>
+                <h3 className="section-title">
+                  {" "}
+                  {metodoEntrega === "despacho"
+                    ? "Datos de envío"
+                    : "Datos del comprador"}{" "}
+                </h3>
                 <div className="shipping-form">
+                  {/* Datos personales - SIEMPRE se muestran */}
                   <div className="form-row">
                     <input
                       type="text"
@@ -520,7 +526,7 @@ const CartSlider = ({
                             nombre: capitalizarNombre(valor),
                           });
                         } else {
-                          // Para usuarios logueados: no cambiar
+                          // Para usuarios logueados
                           setDatosEnvio({
                             ...datosEnvio,
                             nombre: e.target.value,
@@ -547,7 +553,7 @@ const CartSlider = ({
                             apellido: capitalizarNombre(valor),
                           });
                         } else {
-                          // Para usuarios logueados: no cambiar
+                          // Para usuarios logueados
                           setDatosEnvio({
                             ...datosEnvio,
                             apellido: e.target.value,
@@ -589,106 +595,111 @@ const CartSlider = ({
                       readOnly={!!user}
                     />
                   </div>
-                  <div className="form-row">
-                    <input
-                      type="text"
-                      placeholder="Calle"
-                      className="form-input"
-                      value={datosEnvio.calle}
-                      onChange={(e) =>
-                        setDatosEnvio({
-                          ...datosEnvio,
-                          calle: e.target.value,
-                        })
-                      }
-                    />
+                  {/* Campos de dirección (para despacho) */}
+                  {metodoEntrega === "despacho" && (
+                    <>
+                      <div className="form-row">
+                        <input
+                          type="text"
+                          placeholder="Calle"
+                          className="form-input"
+                          value={datosEnvio.calle}
+                          onChange={(e) =>
+                            setDatosEnvio({
+                              ...datosEnvio,
+                              calle: e.target.value,
+                            })
+                          }
+                        />
 
-                    <input
-                      type="text"
-                      placeholder="Número"
-                      className="form-input"
-                      value={datosEnvio.numero}
-                      onChange={(e) => {
-                        // Solo permitir números, máximo 6 dígitos
-                        const valor = e.target.value
-                          .replace(/\D/g, "")
-                          .slice(0, 6);
-                        setDatosEnvio({
-                          ...datosEnvio,
-                          numero: valor,
-                        });
-                      }}
-                    />
-                  </div>
-                  <div className="form-row">
-                    <textarea
-                      placeholder="Información adicional (Depto, Torre, Referencias, etc.)"
-                      className="form-input full-width"
-                      rows="3"
-                      value={datosEnvio.infoAdicional}
-                      onChange={(e) =>
-                        setDatosEnvio({
-                          ...datosEnvio,
-                          infoAdicional: e.target.value,
-                        })
-                      }
-                      maxLength="200"
-                    />
-                  </div>
+                        <input
+                          type="text"
+                          placeholder="Número"
+                          className="form-input"
+                          value={datosEnvio.numero}
+                          onChange={(e) => {
+                            // Solo permitir números, máximo 6 dígitos
+                            const valor = e.target.value
+                              .replace(/\D/g, "")
+                              .slice(0, 6);
+                            setDatosEnvio({
+                              ...datosEnvio,
+                              numero: valor,
+                            });
+                          }}
+                        />
+                      </div>
+                      <div className="form-row">
+                        <textarea
+                          placeholder="Información adicional (Depto, Torre, Referencias, etc.)"
+                          className="form-input full-width"
+                          rows="3"
+                          value={datosEnvio.infoAdicional}
+                          onChange={(e) =>
+                            setDatosEnvio({
+                              ...datosEnvio,
+                              infoAdicional: e.target.value,
+                            })
+                          }
+                          maxLength="200"
+                        />
+                      </div>
 
-                  <div className="form-row">
-                    <select
-                      className="form-input"
-                      value={datosEnvio.region}
-                      onChange={(e) => {
-                        const regionId = e.target.value;
-                        setDatosEnvio({
-                          ...datosEnvio,
-                          region: regionId,
-                          comuna: "",
-                        });
+                      <div className="form-row">
+                        <select
+                          className="form-input"
+                          value={datosEnvio.region}
+                          onChange={(e) => {
+                            const regionId = e.target.value;
+                            setDatosEnvio({
+                              ...datosEnvio,
+                              region: regionId,
+                              comuna: "",
+                            });
 
-                        if (regionId) {
-                          cargarComunasPorRegion(regionId);
-                        }
-                      }}
-                      disabled={ubicacionesLoading}
-                    >
-                      <option value="">
-                        {ubicacionesLoading
-                          ? "Cargando regiones..."
-                          : "Seleccionar Región"}
-                      </option>
-                      {regiones.map((region) => (
-                        <option key={region.id} value={region.id}>
-                          {region.nombre}
-                        </option>
-                      ))}
-                    </select>
+                            if (regionId) {
+                              cargarComunasPorRegion(regionId);
+                            }
+                          }}
+                          disabled={ubicacionesLoading}
+                        >
+                          <option value="">
+                            {ubicacionesLoading
+                              ? "Cargando regiones..."
+                              : "Seleccionar Región"}
+                          </option>
+                          {regiones.map((region) => (
+                            <option key={region.id} value={region.id}>
+                              {region.nombre}
+                            </option>
+                          ))}
+                        </select>
 
-                    <select
-                      className="form-input"
-                      value={datosEnvio.comuna}
-                      onChange={(e) =>
-                        setDatosEnvio({
-                          ...datosEnvio,
-                          comuna: e.target.value,
-                        })
-                      }
-                      disabled={!datosEnvio.region || ubicacionesLoading}
-                    >
-                      <option value="">
-                        {!datosEnvio.region
-                          ? "Primero selecciona región"
-                          : "Seleccionar Comuna"}
-                      </option>
-                      {comunas.map((comuna) => (
-                        <option key={comuna.id} value={comuna.id}>
-                          {comuna.nombre}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                        <select
+                          className="form-input"
+                          value={datosEnvio.comuna}
+                          onChange={(e) =>
+                            setDatosEnvio({
+                              ...datosEnvio,
+                              comuna: e.target.value,
+                            })
+                          }
+                          disabled={!datosEnvio.region || ubicacionesLoading}
+                        >
+                          <option value="">
+                            {!datosEnvio.region
+                              ? "Primero selecciona región"
+                              : "Seleccionar Comuna"}
+                          </option>
+                          {comunas.map((comuna) => (
+                            <option key={comuna.id} value={comuna.id}>
+                              {comuna.nombre}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
 

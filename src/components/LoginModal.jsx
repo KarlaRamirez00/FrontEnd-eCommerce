@@ -170,7 +170,6 @@ export default function LoginModal({
         });
 
         const result = response.data;
-        console.log(result);
 
         if (response.status === 200 && result.token) {
           alert("Login exitoso");
