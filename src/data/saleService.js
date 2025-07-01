@@ -35,7 +35,9 @@ export const transformarDatosVenta = (
   user,
   datosEnvio,
   datosPago,
-  totalConEnvio
+  totalConEnvio,
+  metodoEntrega,
+  sucursalSeleccionada
 ) => {
   // 1. Transforma productos del carrito
   const productos = cartItems.map((item) => ({
@@ -55,10 +57,10 @@ export const transformarDatosVenta = (
     : {
         cliente: null,
         clienteInvitado: {
-          rutCliente: datosEnvio.rut.replace(/[-]/g, ""), // Ignora guión, para no exceder el largo, ya que el backend acepta solo VARCHAR(10)
+          rutCliente: datosEnvio.rut.replace(/[-]/g, ""), // Ignora guión para no exceder el largo
           nomCliente: datosEnvio.nombre,
           apeCliente: datosEnvio.apellido,
-          mailCliente: "email@ejemplo.com",
+          mailCliente: datosEnvio.email || "email@ejemplo.com",
         },
       };
 
@@ -70,20 +72,30 @@ export const transformarDatosVenta = (
     monto: totalConEnvio,
   };
 
-  // 4. Datos de despacho
-  const despacho = {
-    calleDespacho: datosEnvio.calle,
-    numeroCalleDespacho: datosEnvio.numero,
-    comunaDespacho: datosEnvio.comuna,
-  };
-
-  // 5. Estructura final
-  return {
+  // 4. Datos según método de entrega
+  let ventaData = {
     productos,
     ...clienteData,
     pago,
-    despacho,
-    retiro: null,
-    sucursal: 1, // Sucursal fija para despachos por el momento
   };
+
+  if (metodoEntrega === "despacho") {
+    // Para despacho a domicilio
+    ventaData.despacho = {
+      calleDespacho: datosEnvio.calle,
+      numeroCalleDespacho: datosEnvio.numero,
+      comunaDespacho: parseInt(datosEnvio.comuna),
+    };
+    ventaData.retiro = null;
+    ventaData.sucursal = 1; // Sucursal por defecto para despachos
+  } else if (metodoEntrega === "retiro") {
+    // Para retiro en sucursal
+    ventaData.despacho = null;
+    ventaData.retiro = {
+      sucursalRetiro: parseInt(sucursalSeleccionada),
+    };
+    ventaData.sucursal = parseInt(sucursalSeleccionada); // La sucursal donde se retira
+  }
+
+  return ventaData;
 };

@@ -4,7 +4,7 @@ import "../styles/Checkout.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { procesarVenta, transformarDatosVenta } from "../data/saleService";
-
+import { useUbicaciones } from "../data/locationService";
 // Componente del carrito deslizante (CartSlider)
 const CartSlider = ({
   isOpen,
@@ -57,6 +57,17 @@ const CartSlider = ({
     fechaVencimiento: "",
     cvv: "",
   });
+
+  const {
+    regiones,
+    comunas,
+    sucursales,
+    loading: ubicacionesLoading,
+    error: ubicacionesError,
+    cargarRegiones,
+    cargarComunasPorRegion,
+    cargarSucursales,
+  } = useUbicaciones();
 
   // Actualiza datos cuando cambie el usuario
   useEffect(() => {
@@ -223,6 +234,8 @@ const CartSlider = ({
   const handleOpenCheckout = () => {
     setMetodoEntrega("despacho");
     setShowCheckout(true);
+    cargarRegiones();
+    cargarSucursales();
   };
 
   // Función para manejar el pago
@@ -234,7 +247,9 @@ const CartSlider = ({
         user,
         datosEnvio,
         datosPago,
-        totalConEnvio
+        totalConEnvio,
+        metodoEntrega,
+        sucursalSeleccionada
       );
 
       // Envia al backend
@@ -458,9 +473,8 @@ const CartSlider = ({
                     </label>
                   </div>
 
-                  <div className="delivery-option disabled">
+                  <div className="delivery-option">
                     {" "}
-                    {/* Pondremos delivery-option disabled por mientras */}
                     <label htmlFor="retiro" className="delivery-label">
                       <div className="delivery-info">
                         <div className="delivery-title-container">
@@ -471,230 +485,290 @@ const CartSlider = ({
                             name="metodoEntrega"
                             value="retiro"
                             className="delivery-radio"
-                            disabled
+                            disabled={sucursales.length === 0} // Solo deshabilitado si no hay sucursales
                           />
                           <span className="delivery-title">
                             Retiro en sucursal
                           </span>
                         </div>
-                        <span className="delivery-price">Gratis</span>{" "}
+                        <span className="delivery-price">Gratis</span>
                       </div>
-                      <span className="delivery-description">
-                        No disponible
-                      </span>
                     </label>
                   </div>
                 </div>
               </div>
 
-              {/* Datos de envío --> ¡Después tengo que usar los datos de Region y comuna de la BD! */}
-              {metodoEntrega === "despacho" && (
-                <div className="checkout-section">
-                  <h3 className="section-title">Datos de envío</h3>
-                  <div className="shipping-form">
-                    <div className="form-row">
-                      <input
-                        type="text"
-                        placeholder="Nombre"
-                        className="form-input"
-                        value={datosEnvio.nombre}
-                        onChange={(e) => {
-                          if (!user) {
-                            // Solo para usuarios invitados: filtrar y capitalizar
-                            const valor = e.target.value.replace(
-                              /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,
-                              ""
-                            );
-                            setDatosEnvio({
-                              ...datosEnvio,
-                              nombre: capitalizarNombre(valor),
-                            });
-                          } else {
-                            // Para usuarios logueados: no cambiar
-                            setDatosEnvio({
-                              ...datosEnvio,
-                              nombre: e.target.value,
-                            });
-                          }
-                        }}
-                        readOnly={!!user}
-                        maxLength="25"
-                      />
-                      <input
-                        type="text"
-                        placeholder="Apellido"
-                        className="form-input"
-                        value={datosEnvio.apellido}
-                        onChange={(e) => {
-                          if (!user) {
-                            // Solo para usuarios invitados: filtrar y capitalizar
-                            const valor = e.target.value.replace(
-                              /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,
-                              ""
-                            );
-                            setDatosEnvio({
-                              ...datosEnvio,
-                              apellido: capitalizarNombre(valor),
-                            });
-                          } else {
-                            // Para usuarios logueados: no cambiar
-                            setDatosEnvio({
-                              ...datosEnvio,
-                              apellido: e.target.value,
-                            });
-                          }
-                        }}
-                        readOnly={!!user}
-                        maxLength="25"
-                      />
-                    </div>
-
-                    <div className="form-row">
-                      <input
-                        type="text"
-                        placeholder="RUT (ej: 12.345.678-9)"
-                        className="form-input full-width"
-                        maxLength="10" // Máximo XXXXXXXX-X (10 caracteres)
-                        value={datosEnvio.rut}
-                        onChange={(e) =>
+              {/* Datos de envío */}
+              <div className="checkout-section">
+                <h3 className="section-title">Datos de envío</h3>
+                <div className="shipping-form">
+                  <div className="form-row">
+                    <input
+                      type="text"
+                      placeholder="Nombre"
+                      className="form-input"
+                      value={datosEnvio.nombre}
+                      onChange={(e) => {
+                        if (!user) {
+                          // Solo para usuarios invitados: filtrar y capitalizar
+                          const valor = e.target.value.replace(
+                            /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,
+                            ""
+                          );
                           setDatosEnvio({
                             ...datosEnvio,
-                            rut: formatearRUT(e.target.value),
-                          })
-                        }
-                        readOnly={!!user}
-                      />
-                      {/* Campo email */}
-                      <input
-                        type="email"
-                        placeholder="Email"
-                        className="form-input"
-                        value={datosEnvio.email || ""}
-                        onChange={(e) =>
-                          setDatosEnvio({
-                            ...datosEnvio,
-                            email: e.target.value,
-                          })
-                        }
-                        readOnly={!!user}
-                      />
-                    </div>
-                    <div className="form-row">
-                      <input
-                        type="text"
-                        placeholder="Calle"
-                        className="form-input"
-                        value={datosEnvio.calle}
-                        onChange={(e) =>
-                          setDatosEnvio({
-                            ...datosEnvio,
-                            calle: e.target.value,
-                          })
-                        }
-                      />
-
-                      <input
-                        type="text"
-                        placeholder="Número"
-                        className="form-input"
-                        value={datosEnvio.numero}
-                        onChange={(e) => {
-                          // Solo permitir números, máximo 6 dígitos
-                          const valor = e.target.value
-                            .replace(/\D/g, "")
-                            .slice(0, 6);
-                          setDatosEnvio({
-                            ...datosEnvio,
-                            numero: valor,
+                            nombre: capitalizarNombre(valor),
                           });
-                        }}
-                      />
-                    </div>
-                    <div className="form-row">
-                      <textarea
-                        placeholder="Información adicional (Depto, Torre, Referencias, etc.)"
-                        className="form-input full-width"
-                        rows="3"
-                        value={datosEnvio.infoAdicional}
-                        onChange={(e) =>
+                        } else {
+                          // Para usuarios logueados: no cambiar
                           setDatosEnvio({
                             ...datosEnvio,
-                            infoAdicional: e.target.value,
-                          })
+                            nombre: e.target.value,
+                          });
                         }
-                        maxLength="200"
-                      />
-                    </div>
+                      }}
+                      readOnly={!!user}
+                      maxLength="25"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Apellido"
+                      className="form-input"
+                      value={datosEnvio.apellido}
+                      onChange={(e) => {
+                        if (!user) {
+                          // Solo para usuarios invitados: filtrar y capitalizar
+                          const valor = e.target.value.replace(
+                            /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,
+                            ""
+                          );
+                          setDatosEnvio({
+                            ...datosEnvio,
+                            apellido: capitalizarNombre(valor),
+                          });
+                        } else {
+                          // Para usuarios logueados: no cambiar
+                          setDatosEnvio({
+                            ...datosEnvio,
+                            apellido: e.target.value,
+                          });
+                        }
+                      }}
+                      readOnly={!!user}
+                      maxLength="25"
+                    />
+                  </div>
 
-                    <div className="form-row">
-                      <select
-                        className="form-input"
-                        value={datosEnvio.region}
-                        onChange={(e) =>
-                          setDatosEnvio({
-                            ...datosEnvio,
-                            region: e.target.value,
-                          })
-                        }
-                      >
-                        <option value="">Seleccionar Región</option>
-                        <option value="13">Región Metropolitana</option>
-                      </select>
+                  <div className="form-row">
+                    <input
+                      type="text"
+                      placeholder="RUT (ej: 12.345.678-9)"
+                      className="form-input full-width"
+                      maxLength="10" // Máximo XXXXXXXX-X (10 caracteres)
+                      value={datosEnvio.rut}
+                      onChange={(e) =>
+                        setDatosEnvio({
+                          ...datosEnvio,
+                          rut: formatearRUT(e.target.value),
+                        })
+                      }
+                      readOnly={!!user}
+                    />
+                    {/* Campo email */}
+                    <input
+                      type="email"
+                      placeholder="Email"
+                      className="form-input"
+                      value={datosEnvio.email || ""}
+                      onChange={(e) =>
+                        setDatosEnvio({
+                          ...datosEnvio,
+                          email: e.target.value,
+                        })
+                      }
+                      readOnly={!!user}
+                    />
+                  </div>
+                  <div className="form-row">
+                    <input
+                      type="text"
+                      placeholder="Calle"
+                      className="form-input"
+                      value={datosEnvio.calle}
+                      onChange={(e) =>
+                        setDatosEnvio({
+                          ...datosEnvio,
+                          calle: e.target.value,
+                        })
+                      }
+                    />
 
-                      <select
-                        className="form-input"
-                        value={datosEnvio.comuna}
-                        onChange={(e) =>
-                          setDatosEnvio({
-                            ...datosEnvio,
-                            comuna: e.target.value,
-                          })
+                    <input
+                      type="text"
+                      placeholder="Número"
+                      className="form-input"
+                      value={datosEnvio.numero}
+                      onChange={(e) => {
+                        // Solo permitir números, máximo 6 dígitos
+                        const valor = e.target.value
+                          .replace(/\D/g, "")
+                          .slice(0, 6);
+                        setDatosEnvio({
+                          ...datosEnvio,
+                          numero: valor,
+                        });
+                      }}
+                    />
+                  </div>
+                  <div className="form-row">
+                    <textarea
+                      placeholder="Información adicional (Depto, Torre, Referencias, etc.)"
+                      className="form-input full-width"
+                      rows="3"
+                      value={datosEnvio.infoAdicional}
+                      onChange={(e) =>
+                        setDatosEnvio({
+                          ...datosEnvio,
+                          infoAdicional: e.target.value,
+                        })
+                      }
+                      maxLength="200"
+                    />
+                  </div>
+
+                  <div className="form-row">
+                    <select
+                      className="form-input"
+                      value={datosEnvio.region}
+                      onChange={(e) => {
+                        const regionId = e.target.value;
+                        setDatosEnvio({
+                          ...datosEnvio,
+                          region: regionId,
+                          comuna: "",
+                        });
+
+                        if (regionId) {
+                          cargarComunasPorRegion(regionId);
                         }
-                      >
-                        <option value="">Seleccionar Comuna</option>
-                        <option value="109">La Florida</option>
-                        <option value="110">Las Condes</option>
-                        <option value="111">Maipú</option>
-                        <option value="112">Ñuñoa</option>
-                        <option value="113">Providencia</option>
-                        <option value="114">Puente Alto</option>
-                        <option value="115">Santiago Centro</option>
-                      </select>
-                    </div>
+                      }}
+                      disabled={ubicacionesLoading}
+                    >
+                      <option value="">
+                        {ubicacionesLoading
+                          ? "Cargando regiones..."
+                          : "Seleccionar Región"}
+                      </option>
+                      {regiones.map((region) => (
+                        <option key={region.id} value={region.id}>
+                          {region.nombre}
+                        </option>
+                      ))}
+                    </select>
+
+                    <select
+                      className="form-input"
+                      value={datosEnvio.comuna}
+                      onChange={(e) =>
+                        setDatosEnvio({
+                          ...datosEnvio,
+                          comuna: e.target.value,
+                        })
+                      }
+                      disabled={!datosEnvio.region || ubicacionesLoading}
+                    >
+                      <option value="">
+                        {!datosEnvio.region
+                          ? "Primero selecciona región"
+                          : "Seleccionar Comuna"}
+                      </option>
+                      {comunas.map((comuna) => (
+                        <option key={comuna.id} value={comuna.id}>
+                          {comuna.nombre}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
-              )}
+              </div>
 
               {/* Lista de sucursales - Solo si elige retiro */}
               {metodoEntrega === "retiro" && (
                 <div className="checkout-section">
                   <h3 className="section-title">Seleccionar sucursal</h3>
-                  <div className="sucursal-options">
-                    <div className="sucursal-option">
-                      <input
-                        type="radio"
-                        id="florida"
-                        name="sucursal"
-                        value="florida"
-                        onChange={(e) =>
-                          setSucursalSeleccionada(e.target.value)
-                        }
-                      />
-                      <label htmlFor="florida">Sucursal La Florida</label>
+
+                  {ubicacionesError && (
+                    <div className="error-message">
+                      Error al cargar sucursales. Por favor, intenta nuevamente.
                     </div>
-                    <div className="sucursal-option">
-                      <input
-                        type="radio"
-                        id="condes"
-                        name="sucursal"
-                        value="condes"
-                        onChange={(e) =>
-                          setSucursalSeleccionada(e.target.value)
-                        }
-                      />
-                      <label htmlFor="condes">Sucursal Las Condes</label>
+                  )}
+
+                  {ubicacionesLoading ? (
+                    <div className="loading-message">
+                      Cargando sucursales disponibles...
                     </div>
-                  </div>
+                  ) : (
+                    <div className="sucursal-options">
+                      {sucursales.length > 0 ? (
+                        sucursales
+                          .filter(
+                            (sucursal) =>
+                              sucursal.sucursalActiva === 1 ||
+                              sucursal.activaSucursal === 1 ||
+                              sucursal.activaSucursal === true
+                          ) // Solo sucursales activas
+                          .map((sucursal) => (
+                            <div key={sucursal.id} className="sucursal-option">
+                              <input
+                                type="radio"
+                                id={`sucursal-${sucursal.id}`}
+                                name="sucursal"
+                                value={sucursal.id}
+                                onChange={(e) =>
+                                  setSucursalSeleccionada(e.target.value)
+                                }
+                                checked={
+                                  sucursalSeleccionada ===
+                                  sucursal.id.toString()
+                                }
+                              />
+                              <label
+                                htmlFor={`sucursal-${sucursal.id}`}
+                                className="sucursal-label"
+                              >
+                                <div className="sucursal-info">
+                                  <div className="sucursal-nombre">
+                                    {sucursal.nomSucursal}
+                                  </div>
+                                  <div className="sucursal-direccion">
+                                    {sucursal.direccionSucursal}
+                                  </div>
+                                  <div className="sucursal-ubicacion">
+                                    {[
+                                      sucursal.nomComuna,
+                                      sucursal.nomProvincia,
+                                      sucursal.nomRegion,
+                                    ]
+                                      .filter(Boolean)
+                                      .join(", ")}
+                                  </div>
+                                  {sucursal.glosaTipoSucursal && (
+                                    <div className="sucursal-tipo">
+                                      Tipo: {sucursal.glosaTipoSucursal}
+                                    </div>
+                                  )}
+                                </div>
+                              </label>
+                            </div>
+                          ))
+                      ) : (
+                        <div className="no-sucursales-message">
+                          No hay sucursales disponibles para retiro en este
+                          momento.
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
 

@@ -19,9 +19,9 @@ export const useProductFilter = (productos = []) => {
       return [];
     }
 
-    // PASO 1: Aplica filtros
+    // PASO 1: Aplicar filtros
     let resultado = productos.filter((producto) => {
-      // Obtiene precio actual (prioriza precio de oferta si existe)
+      // Obtener precio actual (prioriza precio de oferta si existe)
       const precioActual =
         producto.valorOferta || producto.valorOriginal || producto.precio || 0;
 
@@ -63,7 +63,7 @@ export const useProductFilter = (productos = []) => {
       return true;
     });
 
-    // PASO 2: Aplica ordenamiento
+    // PASO 2: Aplicar ordenamiento
     switch (ordenarPor) {
       case "precio_asc":
         resultado.sort((a, b) => {
@@ -83,7 +83,7 @@ export const useProductFilter = (productos = []) => {
 
       case "descuento":
         resultado.sort((a, b) => {
-          // Calcula porcentaje de descuento
+          // Calcular porcentaje de descuento
           const descuentoA = calcularPorcentajeDescuento(a);
           const descuentoB = calcularPorcentajeDescuento(b);
           return descuentoB - descuentoA; // Mayor descuento primero
@@ -92,11 +92,12 @@ export const useProductFilter = (productos = []) => {
 
       case "relevancia":
       default:
-        // Ordena por ID descendente (productos más nuevos primero)
+        // Ordenar por ID descendente (productos más nuevos primero)
+        // El ID más alto corresponde al producto más recientemente agregado
         resultado.sort((a, b) => {
           const idA = a.idProducto || a.id || 0;
           const idB = b.idProducto || b.id || 0;
-          return idB - idA;
+          return idB - idA; // Descendente: mayor ID primero
         });
         break;
     }

@@ -155,9 +155,9 @@ const Home = ({ onAddToCart }) => {
         ) : (
           <div className="best-sellers">
             {productosFiltrados.length > 0 ? (
-              productosFiltrados.map((producto) => (
+              productosFiltrados.map((producto, index) => (
                 <ProductCard
-                  key={producto.idProducto}
+                  key={`producto-${producto.idProducto}-${index}`}
                   producto={{
                     id: producto.idProducto,
                     nombre: producto.nomProducto,
