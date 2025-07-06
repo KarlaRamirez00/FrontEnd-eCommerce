@@ -2,9 +2,49 @@ import React, { useState, useEffect } from "react";
 import "../styles/Cart.css";
 import "../styles/Checkout.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faTrash,
+  faArrowRight,
+  faAngleDown,
+} from "@fortawesome/free-solid-svg-icons";
 import { procesarVenta, transformarDatosVenta } from "../data/saleService";
 import { useUbicaciones } from "../data/locationService";
+
+// Función para enmascarar datos de pago antes de enviar al backend
+const enmascararDatosPago = (datosPago) => {
+  // Limpiar el número de tarjeta (quitar espacios)
+  const numeroLimpio = datosPago.numeroTarjeta.replace(/\s/g, "");
+
+  return {
+    numeroTarjeta: `************${numeroLimpio.slice(-4)}`,
+    fechaVencimiento: "**/**",
+    cvv: "111",
+  };
+};
+
+// Función para validar que los datos estén completos ANTES de enmascarar
+const validarDatosPagoCompletos = (datosPago) => {
+  const numeroLimpio = datosPago.numeroTarjeta.replace(/\s/g, "");
+
+  // Validaciones básicas
+  if (numeroLimpio.length !== 16) {
+    return {
+      valido: false,
+      mensaje: "El número de tarjeta debe tener 16 dígitos",
+    };
+  }
+
+  if (datosPago.fechaVencimiento.length !== 5) {
+    return { valido: false, mensaje: "La fecha debe tener formato MM/AA" };
+  }
+
+  if (datosPago.cvv.length !== 3) {
+    return { valido: false, mensaje: "El CVV debe tener 3 dígitos" };
+  }
+
+  return { valido: true };
+};
+
 // Componente del carrito deslizante (CartSlider)
 const CartSlider = ({
   isOpen,
@@ -88,7 +128,7 @@ const CartSlider = ({
     const pagoCompleto =
       validarTarjeta(datosPago.numeroTarjeta) &&
       validarFechaVencimiento(datosPago.fechaVencimiento) &&
-      validarCVV(datosPago.cvv);
+      datosPago.cvv.length === 3;
 
     if (metodoEntrega === "despacho") {
       // Si es despacho, validar datos de envío
@@ -197,9 +237,6 @@ const CartSlider = ({
     return true;
   };
   // Valida formato de CVV
-  const validarCVV = (cvv) => {
-    return /^\d{3}$/.test(cvv);
-  };
   const formatearCVV = (valor) => {
     // Solo permite números y máximo 3 dígitos
     return valor.replace(/\D/g, "").slice(0, 3);
@@ -241,12 +278,20 @@ const CartSlider = ({
   // Función para manejar el pago
   const handlePago = async () => {
     try {
+      const validacion = validarDatosPagoCompletos(datosPago);
+      if (!validacion.valido) {
+        alert(validacion.mensaje);
+        return;
+      }
+
+      const datosEnmascarados = enmascararDatosPago(datosPago);
+
       // Transforma datos al formato del backend
       const ventaData = transformarDatosVenta(
         cartItems,
         user,
         datosEnvio,
-        datosPago,
+        datosEnmascarados,
         totalConEnvio,
         metodoEntrega,
         sucursalSeleccionada
@@ -646,57 +691,68 @@ const CartSlider = ({
                       </div>
 
                       <div className="form-row">
-                        <select
-                          className="form-input"
-                          value={datosEnvio.region}
-                          onChange={(e) => {
-                            const regionId = e.target.value;
-                            setDatosEnvio({
-                              ...datosEnvio,
-                              region: regionId,
-                              comuna: "",
-                            });
+                        <div className="select-wrapper">
+                          <select
+                            className="form-input"
+                            value={datosEnvio.region}
+                            onChange={(e) => {
+                              const regionId = e.target.value;
+                              setDatosEnvio({
+                                ...datosEnvio,
+                                region: regionId,
+                                comuna: "",
+                              });
+                              if (regionId) {
+                                cargarComunasPorRegion(regionId);
+                              }
+                            }}
+                            disabled={ubicacionesLoading}
+                          >
+                            <option value="">
+                              {ubicacionesLoading
+                                ? "Cargando regiones..."
+                                : "Seleccionar Región"}
+                            </option>
+                            {regiones.map((region) => (
+                              <option key={region.id} value={region.id}>
+                                {region.nombre}
+                              </option>
+                            ))}
+                          </select>
+                          <FontAwesomeIcon
+                            icon={faAngleDown}
+                            className="select-arrow"
+                          />
+                        </div>
 
-                            if (regionId) {
-                              cargarComunasPorRegion(regionId);
+                        <div className="select-wrapper">
+                          <select
+                            className="form-input"
+                            value={datosEnvio.comuna}
+                            onChange={(e) =>
+                              setDatosEnvio({
+                                ...datosEnvio,
+                                comuna: e.target.value,
+                              })
                             }
-                          }}
-                          disabled={ubicacionesLoading}
-                        >
-                          <option value="">
-                            {ubicacionesLoading
-                              ? "Cargando regiones..."
-                              : "Seleccionar Región"}
-                          </option>
-                          {regiones.map((region) => (
-                            <option key={region.id} value={region.id}>
-                              {region.nombre}
+                            disabled={!datosEnvio.region || ubicacionesLoading}
+                          >
+                            <option value="">
+                              {!datosEnvio.region
+                                ? "Primero selecciona región"
+                                : "Seleccionar Comuna"}
                             </option>
-                          ))}
-                        </select>
-
-                        <select
-                          className="form-input"
-                          value={datosEnvio.comuna}
-                          onChange={(e) =>
-                            setDatosEnvio({
-                              ...datosEnvio,
-                              comuna: e.target.value,
-                            })
-                          }
-                          disabled={!datosEnvio.region || ubicacionesLoading}
-                        >
-                          <option value="">
-                            {!datosEnvio.region
-                              ? "Primero selecciona región"
-                              : "Seleccionar Comuna"}
-                          </option>
-                          {comunas.map((comuna) => (
-                            <option key={comuna.id} value={comuna.id}>
-                              {comuna.nombre}
-                            </option>
-                          ))}
-                        </select>
+                            {comunas.map((comuna) => (
+                              <option key={comuna.id} value={comuna.id}>
+                                {comuna.nombre}
+                              </option>
+                            ))}
+                          </select>
+                          <FontAwesomeIcon
+                            icon={faAngleDown}
+                            className="select-arrow"
+                          />
+                        </div>
                       </div>
                     </>
                   )}

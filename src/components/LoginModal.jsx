@@ -144,7 +144,7 @@ export default function LoginModal({
         return validarEmail(formData.email);
       } else {
         return (
-          formData.newPassword.length >= 6 &&
+          validarPassword(formData.newPassword) &&
           formData.newPassword === formData.confirmNewPassword
         );
       }
@@ -181,7 +181,21 @@ export default function LoginModal({
         }
       } catch (error) {
         console.error("Error en login:", error);
-        alert("Error en el login");
+
+        // Maneja errores específicos del servidor
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.mensaje
+        ) {
+          alert(error.response.data.mensaje);
+        } else if (error.response && error.response.status === 401) {
+          alert("Credenciales incorrectas. Verifica tu email y contraseña.");
+        } else if (error.response && error.response.status === 404) {
+          alert("Usuario no encontrado.");
+        } else {
+          alert("Error de conexión. Verifica tu conexión a internet.");
+        }
       }
     } else if (authMode === "signup") {
       // Lógica de registro
@@ -213,7 +227,25 @@ export default function LoginModal({
         }
       } catch (error) {
         console.error("Error en registro:", error);
-        alert("Error en el registro");
+
+        // Maneja errores específicos del servidor
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.mensaje
+        ) {
+          // El servidor devolvió un mensaje específico (RUT duplicado, email duplicado, etc.)
+          alert(error.response.data.mensaje);
+        } else if (error.response && error.response.status === 400) {
+          // Error 400 pero sin mensaje específico
+          alert("Error en los datos proporcionados. Verifica la información.");
+        } else if (error.response && error.response.status === 500) {
+          // Error interno del servidor
+          alert("Error interno del servidor. Inténtalo más tarde.");
+        } else {
+          // Error de red o desconocido
+          alert("Error de conexión. Verifica tu conexión a internet.");
+        }
       }
     } else if (authMode === "recover") {
       // Lógica de recuperación
@@ -247,8 +279,10 @@ export default function LoginModal({
           return;
         }
 
-        if (formData.newPassword.length < 6) {
-          alert("La contraseña debe tener al menos 6 caracteres");
+        if (!validarPassword(formData.newPassword)) {
+          alert(
+            "La contraseña debe tener mínimo 6 caracteres y al menos 1 mayúscula"
+          );
           return;
         }
 
@@ -365,14 +399,31 @@ export default function LoginModal({
                 </div>
 
                 <div className="form-group mt-3">
-                  <label>Nueva Contraseña</label>
                   <input
                     type="password"
                     className="form-control mt-1"
                     placeholder="Nueva contraseña"
                     name="newPassword"
                     value={formData.newPassword}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        newPassword: e.target.value,
+                      });
+                      if (passwordError) setPasswordError(""); // Limpiar error si existe
+                    }}
+                    onBlur={() => {
+                      // Validar cuando el usuario salga del campo
+                      if (
+                        formData.newPassword &&
+                        !validarPassword(formData.newPassword)
+                      ) {
+                        setPasswordError(
+                          "Mínimo 6 caracteres, al menos 1 mayúscula"
+                        );
+                      }
+                    }}
+                    maxLength="20"
                     required
                   />
                 </div>
@@ -388,6 +439,10 @@ export default function LoginModal({
                     onChange={handleChange}
                     required
                   />
+                  {/* Mostrar error si existe */}
+                  {passwordError && (
+                    <small className="text-danger mt-1">{passwordError}</small>
+                  )}
                 </div>
               </>
             )}

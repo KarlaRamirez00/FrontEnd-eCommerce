@@ -171,7 +171,7 @@
 }
 
 .form-input {
-  padding: 12px;
+  padding: 10px;
   border: 1px solid #ddd;
   border-radius: 6px;
   font-size: 14px;
@@ -186,6 +186,37 @@
   outline: none;
   border-color: #007bff;
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Contenedor para el select personalizado */
+.select-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+/* Ocultar la flecha nativa del select */
+.select-wrapper select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  width: 100%;
+}
+
+/* Flecha personalizada */
+.select-arrow {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+  pointer-events: none; /* Para que no interfiera con el click del select */
+  font-size: 14px;
+}
+
+.select-wrapper:hover .select-arrow {
+  color: #333;
 }
 
 /* Estilos para métodos de pago */
@@ -292,6 +323,7 @@
 .sucursal-option:hover {
   background-color: #f5f5f5;
 }
+
 /*Total final*/
 .checkout-total-final {
   background-color: #f8f9fa;
