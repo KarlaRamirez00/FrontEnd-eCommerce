@@ -10,35 +10,45 @@ import ActivateAccount from "../pages/ActivateAccount";
 import ResetPassword from "../pages/ResetPassword";
 import Offers from "../pages/Offers";
 import AboutUs from "../pages/AboutUs";
+import Favorites from "../pages/Favorites";
 
 const AppRouter = ({ onAddToCart, onOpenRecuperarPassword }) => {
   return (
     <Routes>
       <Route path="/" element={<Home onAddToCart={onAddToCart} />} />
+
       <Route
         path="/buscar"
         element={<SearchResults onAddToCart={onAddToCart} />}
       />
+
       <Route
         path="/categoria/:id"
         element={<Subcategory onAddToCart={onAddToCart} />}
       />
+
       <Route
         path="/subcategoria/:id"
         element={<Subcategory onAddToCart={onAddToCart} />}
       />
+
       <Route
         path="/producto/:id"
         element={<ProductDetails onAddToCart={onAddToCart} />}
       />
-      {/* RUTA PARA ACTIVAR CUENTA */}
+
       <Route path="/activar-cuenta" element={<ActivateAccount />} />
-      {/* RUTA PARA RESTABLECER CONTRASEÑA */}
+
       <Route path="/restablecer-password" element={<ResetPassword />} />
 
       <Route path="/ofertas" element={<Offers onAddToCart={onAddToCart} />} />
 
       <Route path="/nosotros" element={<AboutUs />} />
+
+      <Route
+        path="/favoritos"
+        element={<Favorites onAddToCart={onAddToCart} />}
+      />
     </Routes>
   );
 };

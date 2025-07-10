@@ -9,15 +9,16 @@ import {
   faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import { useFavorites } from "../contexts/FavoritesContext";
 
 // Definimos el componente Header, que recibe varios props desde App.jsx
 const Header = ({
-  isLoggedIn, // booleano que indica si hay un usuario logueado
-  onCartIconClick, // función que abre el carrito cuando se hace click en el icono
-  cartItemCount, // cantidad total de productos en el carrito
-  onLoginClick, // función que abre el modal de login
-  userName, // nombre del usuario que inició sesión
-  onLogoutClick, // función que ejecuta el logout (cerrar sesión)
+  isLoggedIn,
+  onCartIconClick,
+  cartItemCount,
+  onLoginClick,
+  userName,
+  onLogoutClick,
   onToggleCategoryMenu,
   onSearch,
 }) => {
@@ -35,6 +36,8 @@ const Header = ({
     }
   };
   const [showUserMenu, setShowUserMenu] = useState(false);
+
+  const { favoritesCount } = useFavorites();
 
   return (
     <>
@@ -69,6 +72,9 @@ const Header = ({
             <div className="icon-group d-flex justify-content-center justify-content-lg-end">
               <Link to="/favoritos" className="icon-link">
                 <FontAwesomeIcon icon={faHeart} />
+                {favoritesCount > 0 && (
+                  <span className="favorites-badge">{favoritesCount}</span>
+                )}
               </Link>
 
               <div

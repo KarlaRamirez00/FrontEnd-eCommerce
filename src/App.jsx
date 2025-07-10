@@ -8,6 +8,7 @@ import LoginModal from "./components/LoginModal";
 import { useNavigate } from "react-router-dom";
 import { getCategorias, getSubcategorias } from "./data/productService";
 import { FilterProvider } from "./contexts/FilterContext";
+import { FavoritesProvider } from "./contexts/FavoritesContext";
 
 const App = () => {
   const [cartOpen, setCartOpen] = useState(false);
@@ -30,13 +31,12 @@ const App = () => {
     return user ? `cart_${user.id}` : "cart_temp";
   };
 
+  // Estrategia de persistencia híbrida según tipo de usuario
   const saveCartToStorage = (items) => {
     const cartKey = getCartKey();
     if (user) {
-      // Usuario logueado: localStorage persiste entre sesiones
       localStorage.setItem(cartKey, JSON.stringify(items));
     } else {
-      // Usuario no logueado: sessionStorage (se borra al cerrar navegador)
       sessionStorage.setItem(cartKey, JSON.stringify(items));
     }
   };
@@ -98,7 +98,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    // Verificar si hay token guardado al cargar la página
+    // Al cargar, verificar si hay token guardado y restaurar usuario
     const savedToken = localStorage.getItem("token");
     if (savedToken) {
       try {
@@ -122,7 +122,7 @@ const App = () => {
     // Carga carrito del usuario actual (o temporal si no hay usuario)
     const cartData = loadCartFromStorage();
     setCartItems(cartData);
-  }, [user]); // Se ejecuta cuando cambia el usuario
+  }, [user]);
 
   const handleCartIconClick = () => {
     setCartOpen(true);
@@ -146,7 +146,7 @@ const App = () => {
 
     setUser(newUser);
 
-    // IMPORTANTE: Cargar carrito del usuario que se acaba de loguear
+    // Migración de carrito temporal a carrito de usuario logueado
     const userCartKey = `cart_${newUser.id}`;
     const userCart = localStorage.getItem(userCartKey);
 
@@ -173,7 +173,7 @@ const App = () => {
     setUser(null);
     setToken(null);
 
-    // IMPORTANTE: Limpiar carrito actual y cargar carrito temporal (vacío)
+    // Resetear a carrito temporal vacío tras logout
     setCartItems([]);
 
     alert("Sesión cerrada");
@@ -210,7 +210,7 @@ const App = () => {
         newItems = [...prevItems, { ...producto, quantity: 1 }];
       }
 
-      // Usa saveCartToStorage en lugar de localStorage.setItem
+      // Persiste cambios usando estrategia híbrida
       saveCartToStorage(newItems);
       return newItems;
     });
@@ -304,60 +304,59 @@ const App = () => {
     navigate(`/buscar?q=${encodeURIComponent(query)}`);
   };
 
-  // Render principal de la App
   return (
-    <>
-      <Header
-        isLoggedIn={isLoggedIn}
-        onCartIconClick={handleCartIconClick}
-        cartItemCount={cartItems.reduce(
-          (total, item) => total + item.quantity,
-          0
-        )}
-        onLoginClick={handleLoginClick}
-        userName={userName}
-        onLogoutClick={handleLogout}
-        onToggleCategoryMenu={handleOpenCategoryMenu}
-        onSearch={handleSearch}
-      />
-
-      <CategoryMenu
-        isOpen={isCategoryMenuOpen}
-        onClose={handleCloseCategoryMenu}
-        categorias={categorias}
-      />
-
-      {/* Provee el contexto de filtros a las rutas internas */}
-      <FilterProvider>
-        {/* Envolvemos en main-content */}
-        <main className="main-content">
-          {/* MODAL DE LOGIN/REGISTRO */}
-          {showLoginModal && (
-            <LoginModal
-              onClose={closeLoginModal}
-              onLoginSuccess={handleLoginSuccess}
-            />
+    <FavoritesProvider user={user}>
+      <>
+        <Header
+          isLoggedIn={isLoggedIn}
+          onCartIconClick={handleCartIconClick}
+          cartItemCount={cartItems.reduce(
+            (total, item) => total + item.quantity,
+            0
           )}
+          onLoginClick={handleLoginClick}
+          userName={userName}
+          onLogoutClick={handleLogout}
+          onToggleCategoryMenu={handleOpenCategoryMenu}
+          onSearch={handleSearch}
+        />
 
-          {/* Carrito de compras */}
-          <Cart
-            isOpen={cartOpen}
-            onClose={() => setCartOpen(false)}
-            cartItems={cartItems}
-            onRemoveFromCart={handleRemoveFromCart}
-            onIncreaseQuantity={handleIncreaseQuantity}
-            onDecreaseQuantity={handleDecreaseQuantity}
-            onClearCart={handleClearCart}
-            user={user}
-          />
+        <CategoryMenu
+          isOpen={isCategoryMenuOpen}
+          onClose={handleCloseCategoryMenu}
+          categorias={categorias}
+        />
 
-          {/* Rutas principales de navegación */}
-          <AppRouter onAddToCart={handleAddToCart} onSearch={handleSearch} />
-        </main>
-      </FilterProvider>
+        <FilterProvider>
+          <main className="main-content">
+            {/* MODAL DE LOGIN/REGISTRO */}
+            {showLoginModal && (
+              <LoginModal
+                onClose={closeLoginModal}
+                onLoginSuccess={handleLoginSuccess}
+              />
+            )}
 
-      <Footer />
-    </>
+            {/* Carrito de compras */}
+            <Cart
+              isOpen={cartOpen}
+              onClose={() => setCartOpen(false)}
+              cartItems={cartItems}
+              onRemoveFromCart={handleRemoveFromCart}
+              onIncreaseQuantity={handleIncreaseQuantity}
+              onDecreaseQuantity={handleDecreaseQuantity}
+              onClearCart={handleClearCart}
+              user={user}
+            />
+
+            {/* Rutas principales de navegación */}
+            <AppRouter onAddToCart={handleAddToCart} onSearch={handleSearch} />
+          </main>
+        </FilterProvider>
+
+        <Footer />
+      </>
+    </FavoritesProvider>
   );
 };
 

@@ -227,3 +227,27 @@
   margin-top: 10px;
   text-align: center;
 }
+
+/* Botón para vaciar favoritos (igual que vaciar carrito) */
+.clear-favorites-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto -10px auto;
+  padding: 0 5x;
+}
+
+.clear-favorites-button {
+  color: #333;
+  background: none;
+  border: none;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0.3rem 0.5rem;
+  transition: font-weight 0.2s ease;
+  text-align: left;
+}
+
+.clear-favorites-button:hover {
+  color: #e7302a;
+  font-weight: bold;
+}

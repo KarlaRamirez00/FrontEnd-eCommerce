@@ -140,3 +140,20 @@
     height: 200px;
   }
 }
+
+.product-image-container {
+  position: relative; /* Necesario para posicionar el botón de favoritos */
+  overflow: hidden;
+}
+
+/* Hover effect para mostrar botón de favoritos */
+.product-card:hover .favorite-btn-overlay {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.favorite-btn-overlay {
+  opacity: 0.8;
+  transform: scale(0.9);
+  transition: all 0.3s ease;
+}

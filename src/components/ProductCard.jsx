@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import FavoriteButton from "./FavoriteButton";
 import "../styles/ProductCard.css";
 
 const ProductCard = ({ producto, onAddToCart }) => {
@@ -29,7 +30,7 @@ const ProductCard = ({ producto, onAddToCart }) => {
     // Para productos con 1 opción, crea la opción automáticamente
     const productoConOpcion = {
       ...producto,
-      // Agrega opción por defecto para productos con 1 opción
+      // Genera opción única por defecto para productos sin variantes seleccionables
       opcionElegida: {
         idOpcion: null,
         nombreOpcion: "Opción",
@@ -92,6 +93,11 @@ const ProductCard = ({ producto, onAddToCart }) => {
           onError={handleImageError}
           loading="lazy"
         />
+
+        {/* Botón de favoritos */}
+        <FavoriteButton producto={producto} className="favorite-btn-overlay" />
+
+        {/* Badge de descuento */}
         {producto.valorOferta &&
           producto.valorOriginal &&
           producto.valorOferta < producto.valorOriginal && (
@@ -122,7 +128,7 @@ const ProductCard = ({ producto, onAddToCart }) => {
         </div>
       </div>
 
-      {/* Botón único con texto dinámico */}
+      {/* Botón dinámico */}
       <button
         className={`btn ${isAdding ? "btn-adding" : "btn-dark"}`}
         onClick={buttonConfig.onClick}
