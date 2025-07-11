@@ -119,8 +119,44 @@ const CartSlider = ({
         rut: formatearRUT(user.rut || ""),
         email: user.email || "",
       }));
+    } else {
+      setDatosPago({ numeroTarjeta: "", fechaVencimiento: "", cvv: "" });
+      setDatosEnvio((prev) => ({
+        ...prev,
+        calle: "",
+        numero: "",
+        region: "",
+        comuna: "",
+        infoAdicional: "",
+      }));
     }
   }, [user]);
+
+  useEffect(() => {
+    // Reset formularios cuando cambie el usuario (login/logout)
+    if (!user) {
+      // Si no hay usuario (logout), limpia todos los datos
+      setDatosEnvio({
+        nombre: "",
+        apellido: "",
+        rut: "",
+        email: "",
+        calle: "",
+        numero: "",
+        region: "",
+        comuna: "",
+        infoAdicional: "",
+      });
+
+      setDatosPago({
+        numeroTarjeta: "",
+        fechaVencimiento: "",
+        cvv: "",
+      });
+
+      setSucursalSeleccionada("");
+    }
+  }, [user]); // Se ejecuta cuando cambia el usuario
 
   // Función para verificar si el checkout está completo
   const isCheckoutCompleto = () => {

@@ -117,7 +117,6 @@ const App = () => {
     }
   }, []);
 
-  // useEffect para cargar carrito cuando cambie el usuario
   useEffect(() => {
     // Carga carrito del usuario actual (o temporal si no hay usuario)
     const cartData = loadCartFromStorage();
@@ -132,7 +131,6 @@ const App = () => {
     setShowLoginModal(true);
   };
 
-  // Función que se ejecuta cuando haya login exitoso
   const handleLoginSuccess = (tokenReceived) => {
     setToken(tokenReceived);
     const payload = JSON.parse(atob(tokenReceived.split(".")[1]));
@@ -166,7 +164,6 @@ const App = () => {
     setShowLoginModal(false);
   };
 
-  // Función para cerrar sesión
   const handleLogout = () => {
     // Limpiar datos de usuario
     localStorage.removeItem("token");
@@ -175,6 +172,8 @@ const App = () => {
 
     // Resetear a carrito temporal vacío tras logout
     setCartItems([]);
+
+    sessionStorage.removeItem("favorites_temp");
 
     alert("Sesión cerrada");
     navigate("/");
@@ -283,7 +282,6 @@ const App = () => {
   const handleClearCart = () => {
     setCartItems([]);
 
-    // Limpia del storage correcto
     const cartKey = getCartKey();
     if (user) {
       localStorage.removeItem(cartKey);
